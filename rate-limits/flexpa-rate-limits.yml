@@ -1,0 +1,65 @@
+specification: API Commons Rate Limits
+specificationVersion: '0.1'
+schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/RateLimits
+provider: Flexpa
+providerId: flexpa
+created: '2026-06-21'
+modified: '2026-06-21'
+reconciled: false
+tags:
+- Healthcare
+- FHIR
+- Patient Access
+- Claims Data
+- Health Insurance
+- Rate Limiting
+- Quotas
+- Throttling
+description: >-
+  Flexpa governs usage primarily through annual platform license caps -
+  eligible users, IAL2 identity verifications, and included data retrievals -
+  with per-active-user overage billing rather than published per-second request
+  limits. The FHIR API additionally returns HTTP 429 while a freshly connected
+  patient's data is still synchronizing from the payer (typically under one
+  minute) and HTTP 422 if that synchronization fails. Specific per-second or
+  per-minute request ceilings are not publicly documented and are not reconciled
+  in this artifact.
+notes: >-
+  The 429 response on FHIR reads/searches signals an in-progress payer sync, not
+  a hard throughput throttle; clients should retry after a short delay. Confirm
+  any per-account request ceilings with Flexpa during reconciliation.
+sources:
+- https://www.flexpa.com/docs/records
+- https://www.flexpa.com/docs/fhir/explanation-of-benefit
+- https://www.flexpa.com/pricing
+responseCodes:
+  throttled: 429
+limits:
+- name: Eligible Users
+  scope: account
+  metric: users
+  limit: per license tier (5,000 - unlimited)
+  notes: Capped by platform license tier; overage billed per active user.
+- name: IAL2 Verifications
+  scope: account
+  metric: verifications
+  limit: per license tier (1,000 - 100,000)
+  notes: Included identity-verification volume per annual license.
+- name: Data Retrievals
+  scope: account
+  metric: retrievals
+  limit: per license tier (10,000 - unlimited)
+  notes: Included FHIR data retrievals per annual license.
+- name: Initial Patient Sync
+  scope: token
+  metric: requests
+  limit: retry after sync completes
+  notes: FHIR reads/searches return 429 while payer data syncs (typically under one minute).
+policies:
+- name: Sync Backoff
+  description: On a 429 during initial sync, wait briefly and retry; sync usually completes in under a minute.
+- name: License Caps
+  description: Usage is bounded by annual platform license caps with per-active-user overage billing.
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

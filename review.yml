@@ -1,0 +1,71 @@
+aid: flexpa
+name: Flexpa
+review:
+  question: Does Flexpa expose a documented public WebSocket API?
+  answer: false
+  date: '2026-06-21'
+  reviewer: API Evangelist
+  asyncapiSpecCreated: false
+  asyncapiScopeNote: |
+    No AsyncAPI document was created. Flexpa's documented surface is entirely
+    request/response HTTPS REST and FHIR R4 over HTTPS. No WebSocket and no
+    Server-Sent Events (SSE) streaming surface is documented, so there is no
+    event-driven or streaming transport to model.
+findings:
+  summary: |
+    Flexpa does not publish a documented public WebSocket API. The platform
+    exposes OAuth 2.0 (PKCE) authorization and token endpoints under
+    https://api.flexpa.com and a FHIR R4 API under
+    https://api.flexpa.com/fhir, all over HTTPS request/response. Patient
+    consent is collected via Flexpa Link; applications then read claims and
+    clinical data (ExplanationOfBenefit, Coverage, Patient, and other
+    compartment resources). No realtime, bidirectional, or streaming
+    (ws:// or wss://) endpoint is documented.
+  transports:
+    - protocol: REST
+      scheme: https
+      baseURL: https://api.flexpa.com
+      documented: true
+    - protocol: FHIR
+      scheme: https
+      baseURL: https://api.flexpa.com/fhir
+      documented: true
+    - protocol: WebSocket
+      scheme: wss
+      documented: false
+      note: No WebSocket endpoint is documented in Flexpa's docs as of the review date.
+  endpointsConfirmedRest:
+    - GET  https://api.flexpa.com/oauth/authorize
+    - POST https://api.flexpa.com/oauth/token
+    - GET  https://api.flexpa.com/fhir/metadata
+    - GET  https://api.flexpa.com/fhir/Patient
+    - GET  https://api.flexpa.com/fhir/Patient/{id}
+    - GET  https://api.flexpa.com/fhir/Patient/{id}/$everything
+    - GET  https://api.flexpa.com/fhir/Patient/{id}/$summary
+    - GET  https://api.flexpa.com/fhir/Patient/{id}/$pdf
+    - GET  https://api.flexpa.com/fhir/Coverage
+    - GET  https://api.flexpa.com/fhir/Coverage/{id}
+    - GET  https://api.flexpa.com/fhir/ExplanationOfBenefit
+    - GET  https://api.flexpa.com/fhir/ExplanationOfBenefit/{id}
+    - GET  https://api.flexpa.com/fhir/Practitioner
+    - GET  https://api.flexpa.com/fhir/Organization
+    - POST https://api.flexpa.com/fhir/ViewDefinition/$run
+sources:
+  - url: https://www.flexpa.com/docs
+    type: Documentation
+    note: Product overview; lists Flexpa Link, consent (OAuth), and FHIR records. All HTTPS REST.
+  - url: https://www.flexpa.com/docs/consent
+    type: APIReference
+    note: OAuth 2.0 PKCE authorize and token endpoints; no WebSocket.
+  - url: https://www.flexpa.com/docs/records
+    type: Documentation
+    note: FHIR R4 read/search endpoints and patient operations; all HTTPS.
+  - url: https://www.flexpa.com/docs/fhir/explanation-of-benefit
+    type: Documentation
+    note: ExplanationOfBenefit read/search over HTTPS Bearer auth; no streaming.
+actions:
+  asyncapiPath: null
+  apisYmlUpdated: true
+  reason: |
+    No WebSocket or SSE protocol surface exists. Flexpa is request/response
+    REST + FHIR over HTTPS only, so no AsyncAPI artifact was authored.

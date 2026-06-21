@@ -1,0 +1,271 @@
+{
+  "info": {
+    "_postman_id": "f1e2c3a4-5b6d-47e8-9f01-23456789abcd",
+    "name": "Flexpa API",
+    "description": "Flexpa patient-access / health-insurance claims data API. OAuth 2.0 PKCE consent plus a FHIR R4 API at https://api.flexpa.com.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://api.flexpa.com"
+    },
+    {
+      "key": "bearerToken",
+      "value": ""
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}",
+        "type": "string"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "Link",
+      "item": [
+        {
+          "name": "Start the Flexpa Link OAuth 2.0 PKCE authorization flow.",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/oauth/authorize?response_type=code&client_id=&redirect_uri=&code_challenge=&code_challenge_method=S256",
+              "host": ["{{baseUrl}}"],
+              "path": ["oauth", "authorize"],
+              "query": [
+                { "key": "response_type", "value": "code" },
+                { "key": "client_id", "value": "" },
+                { "key": "redirect_uri", "value": "" },
+                { "key": "code_challenge", "value": "" },
+                { "key": "code_challenge_method", "value": "S256" }
+              ]
+            },
+            "description": "Redirects the patient into Flexpa Link to select a health plan and authorize access; returns an authorization code to the redirect_uri."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Access Tokens",
+      "item": [
+        {
+          "name": "Exchange a code, refresh a token, or mint an Application Access Token.",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/x-www-form-urlencoded" }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                { "key": "grant_type", "value": "authorization_code" },
+                { "key": "code", "value": "" },
+                { "key": "code_verifier", "value": "" },
+                { "key": "redirect_uri", "value": "" },
+                { "key": "client_id", "value": "" }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/oauth/token",
+              "host": ["{{baseUrl}}"],
+              "path": ["oauth", "token"]
+            },
+            "description": "Supports authorization_code (PKCE) for Patient Access Tokens, refresh_token, and client_credentials (Basic auth with publishable_key:secret_key) for Application Access Tokens."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "FHIR Resources",
+      "item": [
+        {
+          "name": "FHIR capability statement.",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/fhir/metadata",
+              "host": ["{{baseUrl}}"],
+              "path": ["fhir", "metadata"]
+            },
+            "description": "Returns the FHIR CapabilityStatement."
+          },
+          "response": []
+        },
+        {
+          "name": "Search Patient resources.",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/fhir/Patient",
+              "host": ["{{baseUrl}}"],
+              "path": ["fhir", "Patient"]
+            },
+            "description": "Search Patient resources."
+          },
+          "response": []
+        },
+        {
+          "name": "Read a single Patient resource.",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/fhir/Patient/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["fhir", "Patient", ":id"],
+              "variable": [{ "key": "id", "value": "" }]
+            },
+            "description": "Read a single Patient resource."
+          },
+          "response": []
+        },
+        {
+          "name": "Search Coverage resources.",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/fhir/Coverage",
+              "host": ["{{baseUrl}}"],
+              "path": ["fhir", "Coverage"]
+            },
+            "description": "Search Coverage resources."
+          },
+          "response": []
+        },
+        {
+          "name": "Read a single Coverage resource.",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/fhir/Coverage/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["fhir", "Coverage", ":id"],
+              "variable": [{ "key": "id", "value": "" }]
+            },
+            "description": "Read a single Coverage resource."
+          },
+          "response": []
+        },
+        {
+          "name": "Search individual providers (Practitioner).",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/fhir/Practitioner",
+              "host": ["{{baseUrl}}"],
+              "path": ["fhir", "Practitioner"]
+            },
+            "description": "Search individual providers by NPI, name, or specialty."
+          },
+          "response": []
+        },
+        {
+          "name": "Search healthcare organizations (Organization).",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/fhir/Organization",
+              "host": ["{{baseUrl}}"],
+              "path": ["fhir", "Organization"]
+            },
+            "description": "Search healthcare organizations by NPI, name, or location."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Claims Data",
+      "item": [
+        {
+          "name": "Search ExplanationOfBenefit (claims) resources.",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/fhir/ExplanationOfBenefit",
+              "host": ["{{baseUrl}}"],
+              "path": ["fhir", "ExplanationOfBenefit"]
+            },
+            "description": "Returns health-insurance claims as FHIR ExplanationOfBenefit resources. Supports patient, created, provider, coverage, status, and identifier search parameters."
+          },
+          "response": []
+        },
+        {
+          "name": "Read a single ExplanationOfBenefit resource.",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/fhir/ExplanationOfBenefit/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["fhir", "ExplanationOfBenefit", ":id"],
+              "variable": [{ "key": "id", "value": "" }]
+            },
+            "description": "Read a single ExplanationOfBenefit resource."
+          },
+          "response": []
+        },
+        {
+          "name": "Return all resources in the patient compartment ($everything).",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/fhir/Patient/:id/$everything",
+              "host": ["{{baseUrl}}"],
+              "path": ["fhir", "Patient", ":id", "$everything"],
+              "variable": [{ "key": "id", "value": "" }]
+            },
+            "description": "Returns all resources in the patient compartment."
+          },
+          "response": []
+        },
+        {
+          "name": "Generate an International Patient Summary ($summary).",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/fhir/Patient/:id/$summary",
+              "host": ["{{baseUrl}}"],
+              "path": ["fhir", "Patient", ":id", "$summary"],
+              "variable": [{ "key": "id", "value": "" }]
+            },
+            "description": "Generates an International Patient Summary (IPS) document."
+          },
+          "response": []
+        },
+        {
+          "name": "Export patient health data as PDF ($pdf).",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/fhir/Patient/:id/$pdf",
+              "host": ["{{baseUrl}}"],
+              "path": ["fhir", "Patient", ":id", "$pdf"],
+              "variable": [{ "key": "id", "value": "" }]
+            },
+            "description": "Exports comprehensive patient health data as a PDF."
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,109 @@
+specification: FinOps Framework
+specificationVersion: '1.0'
+schema: https://www.finops.org/framework/
+provider: Flexpa
+providerId: flexpa
+created: '2026-06-21'
+modified: '2026-06-21'
+reconciled: true
+tags:
+- Healthcare
+- FHIR
+- Patient Access
+- Claims Data
+- Health Insurance
+- FinOps
+- Cost Management
+- FOCUS
+description: >-
+  FinOps view of Flexpa spend. Flexpa bills an annual platform license per tier
+  (Builder, Growth, Omni, Infrastructure) that bundles eligible-user capacity, a
+  pool of IAL2 identity verifications, and included FHIR data retrievals. Usage
+  beyond the tier caps is billed as per-active-user overage, and optional
+  features (SSO, MCP server, FHIR extraction) plus professional services are
+  separate annual line items.
+notes: >-
+  License tiers, included pools, and overage rates are subject to change; verify
+  against the Flexpa pricing page during reconciliation.
+sources:
+- https://www.flexpa.com/pricing
+- https://www.flexpa.com/docs
+- https://focus.finops.org/focus-specification/v1-3/
+alignedWith:
+  framework: FinOps Foundation Framework
+  frameworkUrl: https://www.finops.org/framework/
+  dataSpec: FOCUS
+  dataSpecVersion: '1.3'
+  dataSpecUrl: https://focus.finops.org/focus-specification/v1-3/
+publisherName: Flexpa
+serviceCategory: Healthcare
+billingModel:
+  pricingCategory: Committed-Use
+  billingFrequency: Annual
+  billingCurrency: USD
+  chargeCategories:
+  - Purchase
+  - Usage
+  - Adjustment
+focusColumns:
+  ServiceName: Flexpa Platform
+  ServiceCategory: Healthcare
+  ProviderName: Flexpa
+  PublisherName: Flexpa
+  InvoiceIssuerName: Flexpa
+  BillingCurrency: USD
+  ChargeCategory: Purchase
+  PricingCategory: Committed-Use
+meters:
+- name: platform_license
+  description: Annual platform license fee for the selected tier.
+  unit: license
+  aggregation: max
+  dimensions:
+  - account
+  - tier
+- name: eligible_users
+  description: Eligible users connected to the platform, bounded by tier cap.
+  unit: users
+  aggregation: max
+  dimensions:
+  - account
+  - tier
+- name: active_user_overage
+  description: Active users beyond the tier cap, billed at $3-$5 per active user.
+  unit: users
+  aggregation: sum
+  dimensions:
+  - account
+  - tier
+- name: ial2_verifications
+  description: IAL2 identity verifications consumed against the included pool.
+  unit: verifications
+  aggregation: sum
+  dimensions:
+  - account
+- name: data_retrievals
+  description: FHIR data retrievals consumed against the included pool (unlimited on Omni and Infrastructure).
+  unit: retrievals
+  aggregation: sum
+  dimensions:
+  - account
+- name: feature_addons
+  description: Optional annual feature add-ons (SSO, MCP server, FHIR extraction).
+  unit: features
+  aggregation: sum
+  dimensions:
+  - account
+  - feature
+principles:
+- name: Visibility
+  description: Track active users, IAL2 verifications, and data retrievals against tier caps to anticipate overage.
+- name: Allocation
+  description: Attribute platform license and per-user overage to the product lines and teams driving patient connections.
+- name: Optimization
+  description: Right-size the license tier to expected user volume; move to Omni/Infrastructure when unlimited retrievals beat overage; only buy needed feature add-ons.
+- name: Accountability
+  description: Assign an owner for the annual contract and review user/verification/retrieval burn against caps each period.
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

@@ -1,0 +1,119 @@
+aid: flexpa
+url: https://raw.githubusercontent.com/api-evangelist/flexpa/refs/heads/main/apis.yml
+name: Flexpa
+kind: company
+description: Flexpa is a patient-access platform that lets applications connect a patient
+  to their health insurance plan and retrieve claims and clinical data as normalized
+  FHIR R4 resources. Patients authorize access through Flexpa Link / OAuth 2.0 PKCE,
+  and applications read ExplanationOfBenefit, Coverage, Patient, and other resources
+  from a single FHIR API at https://api.flexpa.com.
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+tags:
+- Healthcare
+- FHIR
+- Patient Access
+- Claims Data
+- Health Insurance
+created: '2026-06-21'
+modified: '2026-06-21'
+specificationVersion: '0.19'
+apis:
+- aid: flexpa:flexpa-link-connect-api
+  name: Flexpa Link / Connect API
+  tags:
+  - Link
+  - Connect
+  - OAuth
+  - PKCE
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://www.flexpa.com/docs/tools/link
+  baseURL: https://api.flexpa.com
+  properties:
+  - url: https://www.flexpa.com/docs/tools/link
+    type: Documentation
+  - url: https://www.flexpa.com/docs/consent
+    type: APIReference
+  - url: openapi/flexpa-openapi.yml
+    type: OpenAPI
+  description: Patient consent and connection flow. Flexpa Link walks a patient through
+    selecting their health plan and authorizing access; the OAuth 2.0 PKCE
+    authorization endpoint (GET /oauth/authorize) returns an authorization code that
+    is exchanged for a Patient Access Token.
+- aid: flexpa:flexpa-access-tokens-api
+  name: Flexpa Access Tokens API
+  tags:
+  - Access Tokens
+  - OAuth
+  - Authentication
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://www.flexpa.com/docs/consent
+  baseURL: https://api.flexpa.com
+  properties:
+  - url: https://www.flexpa.com/docs/consent
+    type: Documentation
+  - url: https://www.flexpa.com/blog/introducing-application-access-tokens-server-to-server-authentication-for-the-flexpa-fhir-api
+    type: Documentation
+  - url: openapi/flexpa-openapi.yml
+    type: OpenAPI
+  description: Token endpoint (POST /oauth/token) that exchanges an authorization code
+    plus PKCE verifier for a Patient Access Token, refreshes tokens via the
+    refresh_token grant, and mints server-to-server Application Access Tokens via the
+    client_credentials grant using publishable and secret keys.
+- aid: flexpa:flexpa-fhir-resources-api
+  name: Flexpa FHIR Resources API
+  tags:
+  - FHIR
+  - ExplanationOfBenefit
+  - Coverage
+  - Patient
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://www.flexpa.com/docs/records
+  baseURL: https://api.flexpa.com/fhir
+  properties:
+  - url: https://www.flexpa.com/docs/records
+    type: Documentation
+  - url: https://www.flexpa.com/docs/fhir/explanation-of-benefit
+    type: Documentation
+  - url: openapi/flexpa-openapi.yml
+    type: OpenAPI
+  description: FHIR R4 read and search across patient compartment resources including
+    Patient, Coverage, ExplanationOfBenefit, Condition, Observation, MedicationRequest,
+    Practitioner, and Organization, plus the capability statement at GET /fhir/metadata.
+- aid: flexpa:flexpa-claims-data-api
+  name: Flexpa Claims Data API
+  tags:
+  - Claims Data
+  - ExplanationOfBenefit
+  - Portability
+  - Patient Summary
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://www.flexpa.com/docs/fhir/explanation-of-benefit
+  baseURL: https://api.flexpa.com/fhir
+  properties:
+  - url: https://www.flexpa.com/docs/fhir/explanation-of-benefit
+    type: Documentation
+  - url: https://www.flexpa.com/docs/records
+    type: Documentation
+  - url: openapi/flexpa-openapi.yml
+    type: OpenAPI
+  description: Health-insurance claims delivered as FHIR ExplanationOfBenefit resources,
+    plus patient-portability operations such as Patient $everything, the International
+    Patient Summary ($summary), and PDF export ($pdf).
+common:
+- type: GitHubOrganization
+  url: https://github.com/flexpa
+- type: LinkedIn
+  url: https://www.linkedin.com/company/flexpa
+- type: Website
+  url: https://www.flexpa.com
+- type: Documentation
+  url: https://www.flexpa.com/docs
+- type: Plans
+  url: plans/flexpa-plans-pricing.yml
+- type: RateLimits
+  url: rate-limits/flexpa-rate-limits.yml
+- type: FinOps
+  url: finops/flexpa-finops.yml
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

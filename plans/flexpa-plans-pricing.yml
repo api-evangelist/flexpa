@@ -1,0 +1,175 @@
+specification: API Commons Plans
+specificationVersion: '0.1'
+schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/Plans
+provider: Flexpa
+providerId: flexpa
+created: '2026-06-21'
+modified: '2026-06-21'
+reconciled: true
+tags:
+- Healthcare
+- FHIR
+- Patient Access
+- Claims Data
+- Health Insurance
+- Plans
+description: >-
+  Flexpa is sold as an annual platform license across four tiers - Builder,
+  Growth, Omni, and Infrastructure - differentiated by eligible-user caps,
+  included IAL2 identity verifications, included data retrievals, and the amount
+  of forward-deployed engineering / implementation support. Overages are billed
+  per active user and optional features (SSO, MCP server, FHIR extraction, and
+  similar) are priced as annual add-ons. There is no published self-serve free
+  trial; a separate No-Code Field Test engagement is available.
+notes: >-
+  Pricing reflects the Flexpa pricing page as published; verify current tiers,
+  caps, and add-on pricing on the page during reconciliation.
+sources:
+- https://www.flexpa.com/pricing
+- https://www.flexpa.com/docs
+plans:
+- id: flexpa-builder
+  name: Builder
+  type: flat
+  description: >-
+    For teams validating their first integration. Up to 5,000 eligible users,
+    1,000 IAL2 verifications, 10,000 data retrievals, and 2 weeks of
+    forward-deployed engineering support.
+  entries:
+  - label: Annual Platform License
+    name: builder
+    type: flat
+    metric: contract
+    limit: 5000
+    timeFrame: year
+    geo: global
+    unit: 1
+    price: $20,000/year
+    userMultiplied: false
+  - label: Overage
+    name: builder_overage
+    type: usage
+    metric: active_users
+    limit: -1
+    timeFrame: year
+    geo: global
+    unit: 1
+    price: $3-$5 per active user
+    userMultiplied: false
+  elements:
+  - name: Flexpa Link / Connect
+  - name: Access Tokens
+  - name: FHIR Resources
+  - name: Claims Data
+- id: flexpa-growth
+  name: Growth
+  type: flat
+  description: >-
+    For products scaling live patient traffic. Up to 50,000 users, 5,000 IAL2
+    verifications, 75,000 data retrievals, and 2 weeks of implementation support.
+  entries:
+  - label: Annual Platform License
+    name: growth
+    type: flat
+    metric: contract
+    limit: 50000
+    timeFrame: year
+    geo: global
+    unit: 1
+    price: $50,000/year
+    userMultiplied: false
+  - label: Overage
+    name: growth_overage
+    type: usage
+    metric: active_users
+    limit: -1
+    timeFrame: year
+    geo: global
+    unit: 1
+    price: $3-$5 per active user
+    userMultiplied: false
+  elements:
+  - name: Flexpa Link / Connect
+  - name: Access Tokens
+  - name: FHIR Resources
+  - name: Claims Data
+- id: flexpa-omni
+  name: Omni
+  type: flat
+  description: >-
+    For high-volume platforms across every line of business. Up to 500,000 users,
+    25,000 IAL2 verifications, unlimited data retrievals, and 4 weeks of
+    forward-deployed engineering.
+  entries:
+  - label: Annual Platform License
+    name: omni
+    type: flat
+    metric: contract
+    limit: 500000
+    timeFrame: year
+    geo: global
+    unit: 1
+    price: $350,000/year
+    userMultiplied: false
+  elements:
+  - name: Flexpa Link / Connect
+  - name: Access Tokens
+  - name: FHIR Resources
+  - name: Claims Data
+  - name: Unlimited Data Retrievals
+- id: flexpa-infrastructure
+  name: Infrastructure
+  type: enterprise
+  description: >-
+    For network-scale, fully-managed deployments. No user cap, 100,000 IAL2
+    verifications, unlimited data retrievals, and 12+ weeks of implementation
+    support.
+  entries:
+  - label: Annual Platform License
+    name: infrastructure
+    type: flat
+    metric: contract
+    limit: -1
+    timeFrame: year
+    geo: global
+    unit: 1
+    price: $900,000+/year
+    userMultiplied: false
+  elements:
+  - name: Network-Scale Deployment
+  - name: Fully-Managed Infrastructure
+  - name: Unlimited Data Retrievals
+- id: flexpa-add-ons
+  name: Add-ons and Services
+  type: usage
+  description: >-
+    Optional features and professional services layered on top of a platform
+    license.
+  entries:
+  - label: Optional Feature Add-on
+    name: feature_addon
+    type: flat
+    metric: feature
+    limit: -1
+    timeFrame: year
+    geo: global
+    unit: 1
+    price: $5,000-$20,000 per feature per year
+    userMultiplied: false
+  - label: No-Code Field Test
+    name: no_code_field_test
+    type: flat
+    metric: engagement
+    limit: -1
+    timeFrame: year
+    geo: global
+    unit: 1
+    price: starts at $10,000
+    userMultiplied: false
+  elements:
+  - name: SSO
+  - name: MCP Server
+  - name: FHIR Extraction
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

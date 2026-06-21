@@ -1,0 +1,254 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Flexpa API",
+    "version": "1.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Link",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Start the Flexpa Link OAuth 2.0 PKCE authorization flow.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.flexpa.com/oauth/authorize"
+          },
+          "docs": "Redirects the patient into Flexpa Link to select a health plan and authorize access; returns an authorization code to the redirect_uri."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Access Tokens",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Exchange a code, refresh a token, or mint an Application Access Token.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.flexpa.com/oauth/token",
+            "body": {
+              "type": "json",
+              "data": "{\"grant_type\":\"authorization_code\",\"code\":\"\",\"code_verifier\":\"\",\"redirect_uri\":\"\",\"client_id\":\"\"}"
+            }
+          },
+          "docs": "Supports authorization_code (PKCE) for Patient Access Tokens, refresh_token, and client_credentials for Application Access Tokens."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "FHIR Resources",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "FHIR capability statement.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.flexpa.com/fhir/metadata"
+          },
+          "docs": "Returns the FHIR CapabilityStatement."
+        },
+        {
+          "info": {
+            "name": "Search Patient resources.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.flexpa.com/fhir/Patient"
+          },
+          "docs": "Search Patient resources."
+        },
+        {
+          "info": {
+            "name": "Read a single Patient resource.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.flexpa.com/fhir/Patient/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The Patient resource id."
+              }
+            ]
+          },
+          "docs": "Read a single Patient resource."
+        },
+        {
+          "info": {
+            "name": "Search Coverage resources.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.flexpa.com/fhir/Coverage"
+          },
+          "docs": "Search Coverage resources."
+        },
+        {
+          "info": {
+            "name": "Read a single Coverage resource.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.flexpa.com/fhir/Coverage/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The Coverage resource id."
+              }
+            ]
+          },
+          "docs": "Read a single Coverage resource."
+        },
+        {
+          "info": {
+            "name": "Search individual providers (Practitioner).",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.flexpa.com/fhir/Practitioner"
+          },
+          "docs": "Search individual providers by NPI, name, or specialty."
+        },
+        {
+          "info": {
+            "name": "Search healthcare organizations (Organization).",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.flexpa.com/fhir/Organization"
+          },
+          "docs": "Search healthcare organizations by NPI, name, or location."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Claims Data",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Search ExplanationOfBenefit (claims) resources.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.flexpa.com/fhir/ExplanationOfBenefit"
+          },
+          "docs": "Returns health-insurance claims as FHIR ExplanationOfBenefit resources. Supports patient, created, provider, coverage, status, and identifier search parameters."
+        },
+        {
+          "info": {
+            "name": "Read a single ExplanationOfBenefit resource.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.flexpa.com/fhir/ExplanationOfBenefit/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The ExplanationOfBenefit resource id."
+              }
+            ]
+          },
+          "docs": "Read a single ExplanationOfBenefit resource."
+        },
+        {
+          "info": {
+            "name": "Return all resources in the patient compartment ($everything).",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.flexpa.com/fhir/Patient/:id/$everything",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The Patient resource id."
+              }
+            ]
+          },
+          "docs": "Returns all resources in the patient compartment."
+        },
+        {
+          "info": {
+            "name": "Generate an International Patient Summary ($summary).",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.flexpa.com/fhir/Patient/:id/$summary",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The Patient resource id."
+              }
+            ]
+          },
+          "docs": "Generates an International Patient Summary (IPS) document."
+        },
+        {
+          "info": {
+            "name": "Export patient health data as PDF ($pdf).",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.flexpa.com/fhir/Patient/:id/$pdf",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The Patient resource id."
+              }
+            ]
+          },
+          "docs": "Exports comprehensive patient health data as a PDF."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}
