@@ -100,6 +100,10 @@ apis:
     plus patient-portability operations such as Patient $everything, the International
     Patient Summary ($summary), and PDF export ($pdf).
 common:
+- type: DomainSecurity
+  url: security/flexpa-domain-security.yml
+- type: Authentication
+  url: authentication/flexpa-authentication.yml
 - type: GitHubOrganization
   url: https://github.com/flexpa
 - type: LinkedIn
@@ -114,6 +118,8 @@ common:
   url: rate-limits/flexpa-rate-limits.yml
 - type: FinOps
   url: finops/flexpa-finops.yml
+- url: https://www.flexpa.com/blog
+  type: Blog
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
