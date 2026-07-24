@@ -1,0 +1,189 @@
+openapi: 3.0.1
+info:
+  title: Flexpa Access Tokens FHIR API
+  description: Flexpa lets applications connect a patient to their health insurance plan and retrieve claims and clinical data as normalized FHIR R4 resources. Patients authorize access through Flexpa Link using OAuth 2.0 with PKCE, producing a Patient Access Token. Server-to-server Application Access Tokens are minted with the client_credentials grant using publishable and secret keys. The FHIR API is served under https://api.flexpa.com/fhir.
+  termsOfService: https://www.flexpa.com/legal/terms
+  contact:
+    name: Flexpa Support
+    url: https://www.flexpa.com/docs
+  version: '1.0'
+servers:
+- url: https://api.flexpa.com
+tags:
+- name: FHIR
+paths:
+  /fhir/metadata:
+    get:
+      operationId: getCapabilityStatement
+      tags:
+      - FHIR
+      summary: FHIR capability statement.
+      description: Returns the FHIR CapabilityStatement describing supported resources and operations.
+      responses:
+        '200':
+          description: A FHIR CapabilityStatement resource.
+  /fhir/Patient:
+    get:
+      operationId: searchPatient
+      tags:
+      - FHIR
+      summary: Search Patient resources.
+      security:
+      - bearerAuth: []
+      parameters:
+      - $ref: '#/components/parameters/identifier'
+      responses:
+        '200':
+          description: A FHIR Bundle of Patient resources.
+          content:
+            application/fhir+json:
+              schema:
+                $ref: '#/components/schemas/Bundle'
+        '429':
+          $ref: '#/components/responses/Syncing'
+        '422':
+          $ref: '#/components/responses/SyncFailed'
+  /fhir/Patient/{id}:
+    get:
+      operationId: readPatient
+      tags:
+      - FHIR
+      summary: Read a single Patient resource.
+      security:
+      - bearerAuth: []
+      parameters:
+      - $ref: '#/components/parameters/resourceId'
+      responses:
+        '200':
+          description: A FHIR Patient resource.
+  /fhir/Coverage:
+    get:
+      operationId: searchCoverage
+      tags:
+      - FHIR
+      summary: Search Coverage resources.
+      security:
+      - bearerAuth: []
+      parameters:
+      - $ref: '#/components/parameters/patient'
+      - $ref: '#/components/parameters/status'
+      responses:
+        '200':
+          description: A FHIR Bundle of Coverage resources.
+          content:
+            application/fhir+json:
+              schema:
+                $ref: '#/components/schemas/Bundle'
+        '429':
+          $ref: '#/components/responses/Syncing'
+  /fhir/Coverage/{id}:
+    get:
+      operationId: readCoverage
+      tags:
+      - FHIR
+      summary: Read a single Coverage resource.
+      security:
+      - bearerAuth: []
+      parameters:
+      - $ref: '#/components/parameters/resourceId'
+      responses:
+        '200':
+          description: A FHIR Coverage resource.
+  /fhir/Practitioner:
+    get:
+      operationId: searchPractitioner
+      tags:
+      - FHIR
+      summary: Search individual providers by NPI, name, or specialty.
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: A FHIR Bundle of Practitioner resources.
+          content:
+            application/fhir+json:
+              schema:
+                $ref: '#/components/schemas/Bundle'
+  /fhir/Organization:
+    get:
+      operationId: searchOrganization
+      tags:
+      - FHIR
+      summary: Search healthcare organizations by NPI, name, or location.
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: A FHIR Bundle of Organization resources.
+          content:
+            application/fhir+json:
+              schema:
+                $ref: '#/components/schemas/Bundle'
+  /fhir/ViewDefinition/$run:
+    post:
+      operationId: runViewDefinition
+      tags:
+      - FHIR
+      summary: Extract structured (tabular) data using a SQL-on-FHIR ViewDefinition.
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/fhir+json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Structured extraction output.
+components:
+  parameters:
+    status:
+      name: status
+      in: query
+      schema:
+        type: string
+    resourceId:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+    identifier:
+      name: identifier
+      in: query
+      schema:
+        type: string
+    patient:
+      name: patient
+      in: query
+      schema:
+        type: string
+  schemas:
+    Bundle:
+      type: object
+      description: A FHIR R4 Bundle of resources.
+      properties:
+        resourceType:
+          type: string
+          example: Bundle
+        type:
+          type: string
+          example: searchset
+        total:
+          type: integer
+        entry:
+          type: array
+          items:
+            type: object
+  responses:
+    SyncFailed:
+      description: Synchronization with the payer failed.
+    Syncing:
+      description: The patient's data is still being synchronized from the payer (typically under one minute). Retry after a short delay.
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: 'A Patient Access Token (from the authorization_code flow) or an Application Access Token (from the client_credentials flow), sent as Authorization: Bearer {access_token}.'

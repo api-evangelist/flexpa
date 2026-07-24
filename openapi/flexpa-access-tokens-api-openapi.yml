@@ -1,0 +1,84 @@
+openapi: 3.0.1
+info:
+  title: Flexpa Access Tokens API
+  description: Flexpa lets applications connect a patient to their health insurance plan and retrieve claims and clinical data as normalized FHIR R4 resources. Patients authorize access through Flexpa Link using OAuth 2.0 with PKCE, producing a Patient Access Token. Server-to-server Application Access Tokens are minted with the client_credentials grant using publishable and secret keys. The FHIR API is served under https://api.flexpa.com/fhir.
+  termsOfService: https://www.flexpa.com/legal/terms
+  contact:
+    name: Flexpa Support
+    url: https://www.flexpa.com/docs
+  version: '1.0'
+servers:
+- url: https://api.flexpa.com
+tags:
+- name: Access Tokens
+paths:
+  /oauth/token:
+    post:
+      operationId: token
+      tags:
+      - Access Tokens
+      summary: Exchange a code, refresh a token, or mint an Application Access Token.
+      description: The token endpoint supports the authorization_code grant (with PKCE code_verifier) to obtain a Patient Access Token, the refresh_token grant to renew it, and the client_credentials grant (Basic auth with publishable_key:secret_key) to mint a server-to-server Application Access Token. Application Access Tokens are JWTs signed with ES256 and live for 30 minutes.
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenRequest'
+      responses:
+        '200':
+          description: A token response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenResponse'
+components:
+  schemas:
+    TokenResponse:
+      type: object
+      properties:
+        access_token:
+          type: string
+        token_type:
+          type: string
+          example: Bearer
+        expires_in:
+          type: integer
+          description: Token lifetime in seconds.
+        refresh_token:
+          type: string
+          description: Present when the offline_access scope was granted.
+        scope:
+          type: string
+    TokenRequest:
+      type: object
+      required:
+      - grant_type
+      properties:
+        grant_type:
+          type: string
+          enum:
+          - authorization_code
+          - refresh_token
+          - client_credentials
+        code:
+          type: string
+          description: The authorization code (authorization_code grant).
+        code_verifier:
+          type: string
+          description: The PKCE verifier (authorization_code grant).
+        redirect_uri:
+          type: string
+          format: uri
+        client_id:
+          type: string
+          description: Your publishable key.
+        refresh_token:
+          type: string
+          description: The refresh token (refresh_token grant).
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: 'A Patient Access Token (from the authorization_code flow) or an Application Access Token (from the client_credentials flow), sent as Authorization: Bearer {access_token}.'

@@ -1,0 +1,73 @@
+openapi: 3.0.1
+info:
+  title: Flexpa Access Tokens Link API
+  description: Flexpa lets applications connect a patient to their health insurance plan and retrieve claims and clinical data as normalized FHIR R4 resources. Patients authorize access through Flexpa Link using OAuth 2.0 with PKCE, producing a Patient Access Token. Server-to-server Application Access Tokens are minted with the client_credentials grant using publishable and secret keys. The FHIR API is served under https://api.flexpa.com/fhir.
+  termsOfService: https://www.flexpa.com/legal/terms
+  contact:
+    name: Flexpa Support
+    url: https://www.flexpa.com/docs
+  version: '1.0'
+servers:
+- url: https://api.flexpa.com
+tags:
+- name: Link
+paths:
+  /oauth/authorize:
+    get:
+      operationId: authorize
+      tags:
+      - Link
+      summary: Start the Flexpa Link OAuth 2.0 PKCE authorization flow.
+      description: Redirects the patient into the Flexpa Link experience to select their health plan and authorize access. On success Flexpa redirects back to the application's redirect_uri with an authorization code.
+      parameters:
+      - name: response_type
+        in: query
+        required: true
+        schema:
+          type: string
+          enum:
+          - code
+      - name: client_id
+        in: query
+        required: true
+        description: Your publishable key.
+        schema:
+          type: string
+      - name: redirect_uri
+        in: query
+        required: true
+        schema:
+          type: string
+          format: uri
+      - name: scope
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: state
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: code_challenge
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: code_challenge_method
+        in: query
+        required: true
+        schema:
+          type: string
+          enum:
+          - S256
+      responses:
+        '302':
+          description: Redirect back to redirect_uri with an authorization code.
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: 'A Patient Access Token (from the authorization_code flow) or an Application Access Token (from the client_credentials flow), sent as Authorization: Bearer {access_token}.'
