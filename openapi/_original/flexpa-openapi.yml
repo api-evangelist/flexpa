@@ -1,0 +1,421 @@
+openapi: 3.0.1
+info:
+  title: Flexpa API
+  description: >-
+    Flexpa lets applications connect a patient to their health insurance plan and
+    retrieve claims and clinical data as normalized FHIR R4 resources. Patients
+    authorize access through Flexpa Link using OAuth 2.0 with PKCE, producing a
+    Patient Access Token. Server-to-server Application Access Tokens are minted
+    with the client_credentials grant using publishable and secret keys. The FHIR
+    API is served under https://api.flexpa.com/fhir.
+  termsOfService: https://www.flexpa.com/legal/terms
+  contact:
+    name: Flexpa Support
+    url: https://www.flexpa.com/docs
+  version: '1.0'
+servers:
+  - url: https://api.flexpa.com
+paths:
+  /oauth/authorize:
+    get:
+      operationId: authorize
+      tags:
+        - Link
+      summary: Start the Flexpa Link OAuth 2.0 PKCE authorization flow.
+      description: >-
+        Redirects the patient into the Flexpa Link experience to select their
+        health plan and authorize access. On success Flexpa redirects back to the
+        application's redirect_uri with an authorization code.
+      parameters:
+        - name: response_type
+          in: query
+          required: true
+          schema:
+            type: string
+            enum:
+              - code
+        - name: client_id
+          in: query
+          required: true
+          description: Your publishable key.
+          schema:
+            type: string
+        - name: redirect_uri
+          in: query
+          required: true
+          schema:
+            type: string
+            format: uri
+        - name: scope
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: state
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: code_challenge
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: code_challenge_method
+          in: query
+          required: true
+          schema:
+            type: string
+            enum:
+              - S256
+      responses:
+        '302':
+          description: Redirect back to redirect_uri with an authorization code.
+  /oauth/token:
+    post:
+      operationId: token
+      tags:
+        - Access Tokens
+      summary: Exchange a code, refresh a token, or mint an Application Access Token.
+      description: >-
+        The token endpoint supports the authorization_code grant (with PKCE
+        code_verifier) to obtain a Patient Access Token, the refresh_token grant to
+        renew it, and the client_credentials grant (Basic auth with
+        publishable_key:secret_key) to mint a server-to-server Application Access
+        Token. Application Access Tokens are JWTs signed with ES256 and live for 30
+        minutes.
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenRequest'
+      responses:
+        '200':
+          description: A token response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenResponse'
+  /fhir/metadata:
+    get:
+      operationId: getCapabilityStatement
+      tags:
+        - FHIR
+      summary: FHIR capability statement.
+      description: Returns the FHIR CapabilityStatement describing supported resources and operations.
+      responses:
+        '200':
+          description: A FHIR CapabilityStatement resource.
+  /fhir/Patient:
+    get:
+      operationId: searchPatient
+      tags:
+        - FHIR
+      summary: Search Patient resources.
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/identifier'
+      responses:
+        '200':
+          description: A FHIR Bundle of Patient resources.
+          content:
+            application/fhir+json:
+              schema:
+                $ref: '#/components/schemas/Bundle'
+        '429':
+          $ref: '#/components/responses/Syncing'
+        '422':
+          $ref: '#/components/responses/SyncFailed'
+  /fhir/Patient/{id}:
+    get:
+      operationId: readPatient
+      tags:
+        - FHIR
+      summary: Read a single Patient resource.
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/resourceId'
+      responses:
+        '200':
+          description: A FHIR Patient resource.
+  /fhir/Patient/{id}/$everything:
+    get:
+      operationId: patientEverything
+      tags:
+        - Claims Data
+      summary: Return all resources in the patient compartment.
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/resourceId'
+      responses:
+        '200':
+          description: A FHIR Bundle of all patient compartment resources.
+          content:
+            application/fhir+json:
+              schema:
+                $ref: '#/components/schemas/Bundle'
+  /fhir/Patient/{id}/$summary:
+    get:
+      operationId: patientSummary
+      tags:
+        - Claims Data
+      summary: Generate an International Patient Summary (IPS) document.
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/resourceId'
+      responses:
+        '200':
+          description: A FHIR IPS Bundle.
+  /fhir/Patient/{id}/$pdf:
+    get:
+      operationId: patientPdf
+      tags:
+        - Claims Data
+      summary: Export comprehensive patient health data as a PDF.
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/resourceId'
+      responses:
+        '200':
+          description: A PDF document.
+          content:
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+  /fhir/Coverage:
+    get:
+      operationId: searchCoverage
+      tags:
+        - FHIR
+      summary: Search Coverage resources.
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/patient'
+        - $ref: '#/components/parameters/status'
+      responses:
+        '200':
+          description: A FHIR Bundle of Coverage resources.
+          content:
+            application/fhir+json:
+              schema:
+                $ref: '#/components/schemas/Bundle'
+        '429':
+          $ref: '#/components/responses/Syncing'
+  /fhir/Coverage/{id}:
+    get:
+      operationId: readCoverage
+      tags:
+        - FHIR
+      summary: Read a single Coverage resource.
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/resourceId'
+      responses:
+        '200':
+          description: A FHIR Coverage resource.
+  /fhir/ExplanationOfBenefit:
+    get:
+      operationId: searchExplanationOfBenefit
+      tags:
+        - Claims Data
+      summary: Search ExplanationOfBenefit (claims) resources.
+      description: >-
+        Returns health-insurance claims as FHIR ExplanationOfBenefit resources.
+        Supports FHIR R4 search parameters including patient, created, provider,
+        coverage, status, and identifier.
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/patient'
+        - name: created
+          in: query
+          schema:
+            type: string
+        - name: provider
+          in: query
+          schema:
+            type: string
+        - name: coverage
+          in: query
+          schema:
+            type: string
+        - $ref: '#/components/parameters/status'
+        - $ref: '#/components/parameters/identifier'
+      responses:
+        '200':
+          description: A FHIR Bundle of ExplanationOfBenefit resources.
+          content:
+            application/fhir+json:
+              schema:
+                $ref: '#/components/schemas/Bundle'
+        '429':
+          $ref: '#/components/responses/Syncing'
+        '422':
+          $ref: '#/components/responses/SyncFailed'
+  /fhir/ExplanationOfBenefit/{id}:
+    get:
+      operationId: readExplanationOfBenefit
+      tags:
+        - Claims Data
+      summary: Read a single ExplanationOfBenefit resource.
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/resourceId'
+      responses:
+        '200':
+          description: A FHIR ExplanationOfBenefit resource.
+  /fhir/Practitioner:
+    get:
+      operationId: searchPractitioner
+      tags:
+        - FHIR
+      summary: Search individual providers by NPI, name, or specialty.
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: A FHIR Bundle of Practitioner resources.
+          content:
+            application/fhir+json:
+              schema:
+                $ref: '#/components/schemas/Bundle'
+  /fhir/Organization:
+    get:
+      operationId: searchOrganization
+      tags:
+        - FHIR
+      summary: Search healthcare organizations by NPI, name, or location.
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: A FHIR Bundle of Organization resources.
+          content:
+            application/fhir+json:
+              schema:
+                $ref: '#/components/schemas/Bundle'
+  /fhir/ViewDefinition/$run:
+    post:
+      operationId: runViewDefinition
+      tags:
+        - FHIR
+      summary: Extract structured (tabular) data using a SQL-on-FHIR ViewDefinition.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/fhir+json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Structured extraction output.
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: >-
+        A Patient Access Token (from the authorization_code flow) or an Application
+        Access Token (from the client_credentials flow), sent as
+        Authorization: Bearer {access_token}.
+  parameters:
+    resourceId:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+    patient:
+      name: patient
+      in: query
+      schema:
+        type: string
+    status:
+      name: status
+      in: query
+      schema:
+        type: string
+    identifier:
+      name: identifier
+      in: query
+      schema:
+        type: string
+  responses:
+    Syncing:
+      description: >-
+        The patient's data is still being synchronized from the payer (typically
+        under one minute). Retry after a short delay.
+    SyncFailed:
+      description: Synchronization with the payer failed.
+  schemas:
+    TokenRequest:
+      type: object
+      required:
+        - grant_type
+      properties:
+        grant_type:
+          type: string
+          enum:
+            - authorization_code
+            - refresh_token
+            - client_credentials
+        code:
+          type: string
+          description: The authorization code (authorization_code grant).
+        code_verifier:
+          type: string
+          description: The PKCE verifier (authorization_code grant).
+        redirect_uri:
+          type: string
+          format: uri
+        client_id:
+          type: string
+          description: Your publishable key.
+        refresh_token:
+          type: string
+          description: The refresh token (refresh_token grant).
+    TokenResponse:
+      type: object
+      properties:
+        access_token:
+          type: string
+        token_type:
+          type: string
+          example: Bearer
+        expires_in:
+          type: integer
+          description: Token lifetime in seconds.
+        refresh_token:
+          type: string
+          description: Present when the offline_access scope was granted.
+        scope:
+          type: string
+    Bundle:
+      type: object
+      description: A FHIR R4 Bundle of resources.
+      properties:
+        resourceType:
+          type: string
+          example: Bundle
+        type:
+          type: string
+          example: searchset
+        total:
+          type: integer
+        entry:
+          type: array
+          items:
+            type: object

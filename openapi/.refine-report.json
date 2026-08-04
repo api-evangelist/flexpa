@@ -1,0 +1,20 @@
+{
+  "provider": "flexpa",
+  "sources": [
+    "flexpa-access-tokens-api-openapi.yml",
+    "flexpa-claims-data-api-openapi.yml",
+    "flexpa-fhir-api-openapi.yml",
+    "flexpa-link-api-openapi.yml"
+  ],
+  "outputs": [
+    "flexpa-access-tokens-api-openapi.yml",
+    "flexpa-claims-data-api-openapi.yml",
+    "flexpa-fhir-api-openapi.yml",
+    "flexpa-link-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [],
+  "skipped": []
+}
