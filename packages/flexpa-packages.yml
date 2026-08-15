@@ -1,0 +1,100 @@
+generated: '2026-08-14'
+method: searched
+source: https://registry.npmjs.org + https://www.flexpa.com/docs/records/node-sdk + https://www.flexpa.com/docs/consent
+provider: Flexpa
+providerId: flexpa
+summary: >-
+  Flexpa's client libraries are JavaScript/TypeScript only. Three first-party npm
+  packages are current: the server-side Node SDK, the browser Link/Consent
+  launcher (also distributed as an IIFE script tag), and a React Native wrapper.
+  There is no Python, Go, Java, Ruby, PHP or .NET client - PyPI, RubyGems and
+  crates.io return 404 for every Flexpa name searched.
+packages:
+- language: javascript
+  registry: npm
+  name: '@flexpa/node-sdk'
+  url: https://www.npmjs.com/package/@flexpa/node-sdk
+  install: npm install @flexpa/node-sdk
+  official: true
+  version: 2.0.0
+  published: '2026-06-01'
+  description: >-
+    Strongly-typed Node client for the Flexpa APIs - FlexpaClient with
+    fromBearerToken / fromAuthorizationCode / fromClientCredentials, PKCE
+    helpers, introspect / tokenRefresh / revoke, and FHIR read / search /
+    $everything.
+  requires: Node.js 19+ (global Web Crypto API)
+  docs: https://www.flexpa.com/docs/records/node-sdk
+- language: javascript
+  registry: npm
+  name: '@flexpa/link'
+  url: https://www.npmjs.com/package/@flexpa/link
+  install: npm install @flexpa/link
+  official: true
+  version: 1.1.3
+  published: '2025-11-19'
+  description: >-
+    Browser launcher for the Flexpa Link / Consent experience. Also published as
+    an IIFE that can be loaded with a <script src="..."> tag.
+  docs: https://www.flexpa.com/docs/consent
+- language: javascript
+  registry: npm
+  name: '@flexpa/link-react-native'
+  url: https://www.npmjs.com/package/@flexpa/link-react-native
+  install: npm install @flexpa/link-react-native
+  official: true
+  version: 0.1.0
+  published: '2025-06-30'
+  repository: https://github.com/flexpa/flexpa (packages/link-react-native)
+  description: React Native SDK for integrating Flexpa Link into mobile applications.
+  example: https://github.com/flexpa/flexpa-link-react-native-example
+deprecated_or_stale:
+- language: javascript
+  registry: npm
+  name: '@flexpa/link-pkg'
+  url: https://www.npmjs.com/package/@flexpa/link-pkg
+  official: true
+  version: 0.0.4
+  published: '2022-07-30'
+  note: >-
+    Superseded by @flexpa/link - identical description, last published 2022. Not
+    referenced by current documentation.
+- language: javascript
+  registry: npm
+  name: flexpa
+  url: https://www.npmjs.com/package/flexpa
+  official: unknown
+  version: 0.0.1
+  published: '2021-09-16'
+  note: >-
+    Name placeholder published from github.com/flexpa/flexpa in 2021; no
+    documentation references it.
+third_party:
+- language: javascript
+  registry: npm
+  name: '@iflow-mcp/flexpa-mcp-fhir'
+  url: https://www.npmjs.com/package/@iflow-mcp/flexpa-mcp-fhir
+  official: false
+  version: 0.0.1
+  published: '2026-02-13'
+  note: >-
+    Third-party republish under the @iflow-mcp scope, not a Flexpa namespace.
+    Flexpa's own MCP servers are remote HTTP endpoints, not stdio packages.
+registries_checked:
+- registry: npm
+  result: 3 current first-party packages
+- registry: pypi
+  result: 404 for flexpa and flexpa-sdk
+- registry: rubygems
+  result: no first-party gem
+- registry: crates.io
+  result: no first-party crate
+- registry: maven-central
+  result: no first-party artifact
+- registry: nuget
+  result: no first-party package
+- registry: pkg.go.dev
+  result: no first-party module
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

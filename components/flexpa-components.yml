@@ -1,0 +1,65 @@
+generated: '2026-08-14'
+method: searched
+source: https://www.flexpa.com/docs/consent + https://registry.npmjs.org/@flexpa/link
+provider: Flexpa
+providerId: flexpa
+summary: >-
+  Flexpa Consent (formerly Flexpa Link) is the embeddable surface - a hosted
+  consent experience launched inside an iframe by a tiny browser package that is
+  also distributed as an IIFE for a plain script tag. Mobile is deliberately
+  SDK-light: iOS and Android use OS-native browser sessions rather than a Flexpa
+  component, and only React Native gets a wrapper.
+families:
+- name: Flexpa Consent (Link)
+  kind: hosted-embedded-flow
+  description: >-
+    Drop-in patient consent and payer-connection experience. Runs Flexpa's hosted
+    app in an iframe; the host application never handles payer credentials.
+  loader:
+    package: '@flexpa/link'
+    registry: npm
+    version: 1.1.3
+    published: '2025-11-19'
+    distribution:
+    - npm module
+    - IIFE bundle loadable via <script src="...">
+    note: >-
+      The published CDN script URL is not pinned in the documentation, so a
+      consumer loading the IIFE by tag cannot tell which build they receive.
+  docs: https://www.flexpa.com/docs/consent
+  configuration:
+  - client_id (publishable key, pk_test_ / pk_live_)
+  - redirect_uri (pre-registered)
+  - code_challenge + code_challenge_method=S256
+  - scope (launch/patient, optionally offline_access)
+  - flexpa_external_id
+  - flexpa_search_mode / flexpa_ial2_mode
+  - flexpa_resume
+- name: Flexpa Consent for React Native
+  kind: mobile-sdk
+  package: '@flexpa/link-react-native'
+  registry: npm
+  version: 0.1.0
+  published: '2025-06-30'
+  example_repo: https://github.com/flexpa/flexpa-link-react-native-example
+  docs: https://www.flexpa.com/docs/consent
+- name: Native mobile (no Flexpa component)
+  kind: os-native
+  ios: ASWebAuthenticationSession
+  android: Chrome Custom Tabs (optionally AppAuth-Android)
+  note: Flexpa deliberately ships no iOS or Android SDK; the OAuth redirect is handled by the platform browser session.
+- name: Flexpa Portal
+  kind: hosted-dashboard
+  url: https://portal.flexpa.com
+  description: >-
+    Operator dashboard for API keys, webhook endpoints and secrets, application
+    settings, sync frequency and IAL2 verification history. Not embeddable.
+- name: MyFlexpa
+  kind: hosted-consumer-app
+  url: https://my.flexpa.com
+  description: >-
+    Flexpa's own patient-facing application built on the same APIs - the reference
+    consumer experience, not a component customers embed.
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

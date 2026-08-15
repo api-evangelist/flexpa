@@ -2,11 +2,10 @@ aid: flexpa
 url: https://raw.githubusercontent.com/api-evangelist/flexpa/refs/heads/main/apis.yml
 name: Flexpa
 kind: company
-description: Flexpa is a patient-access platform that lets applications connect a patient
-  to their health insurance plan and retrieve claims and clinical data as normalized
-  FHIR R4 resources. Patients authorize access through Flexpa Link / OAuth 2.0 PKCE,
-  and applications read ExplanationOfBenefit, Coverage, Patient, and other resources
-  from a single FHIR API at https://api.flexpa.com.
+description: Flexpa is a patient-access platform that lets applications connect a patient to their health
+  insurance plan and retrieve claims and clinical data as normalized FHIR R4 resources. Patients authorize
+  access through Flexpa Link / OAuth 2.0 PKCE, and applications read ExplanationOfBenefit, Coverage, Patient,
+  and other resources from a single FHIR API at https://api.flexpa.com.
 accessModel:
   pricing: paid
   onboarding: self-serve
@@ -28,7 +27,7 @@ tags:
 - Claims Data
 - Health Insurance
 created: '2026-06-21'
-modified: '2026-06-21'
+modified: '2026-08-14'
 specificationVersion: '0.19'
 apis:
 - aid: flexpa:flexpa-access-tokens-api
@@ -48,12 +47,13 @@ apis:
   - type: Documentation
     url: https://www.flexpa.com/docs/consent
   - type: Documentation
-    url: >-
-      https://www.flexpa.com/blog/introducing-application-access-tokens-server-to-server-authentication-for-the-flexpa-fhir-api
+    url: https://www.flexpa.com/blog/introducing-application-access-tokens-server-to-server-authentication-for-the-flexpa-fhir-api
   - type: Documentation
     url: https://www.flexpa.com/docs/records
   - type: Documentation
     url: https://www.flexpa.com/docs/fhir/explanation-of-benefit
+  - type: Overlay
+    url: overlays/flexpa-access-tokens-api-overlay.yaml
 - aid: flexpa:flexpa-claims-data-api
   name: Flexpa Claims Data API
   description: The Claims Data API from Flexpa — 5 operation(s) for claims data.
@@ -71,12 +71,13 @@ apis:
   - type: Documentation
     url: https://www.flexpa.com/docs/consent
   - type: Documentation
-    url: >-
-      https://www.flexpa.com/blog/introducing-application-access-tokens-server-to-server-authentication-for-the-flexpa-fhir-api
+    url: https://www.flexpa.com/blog/introducing-application-access-tokens-server-to-server-authentication-for-the-flexpa-fhir-api
   - type: Documentation
     url: https://www.flexpa.com/docs/records
   - type: Documentation
     url: https://www.flexpa.com/docs/fhir/explanation-of-benefit
+  - type: Overlay
+    url: overlays/flexpa-claims-data-api-overlay.yaml
 - aid: flexpa:flexpa-fhir-api
   name: Flexpa FHIR API
   description: The FHIR API from Flexpa — 8 operation(s) for fhir.
@@ -94,12 +95,13 @@ apis:
   - type: Documentation
     url: https://www.flexpa.com/docs/consent
   - type: Documentation
-    url: >-
-      https://www.flexpa.com/blog/introducing-application-access-tokens-server-to-server-authentication-for-the-flexpa-fhir-api
+    url: https://www.flexpa.com/blog/introducing-application-access-tokens-server-to-server-authentication-for-the-flexpa-fhir-api
   - type: Documentation
     url: https://www.flexpa.com/docs/records
   - type: Documentation
     url: https://www.flexpa.com/docs/fhir/explanation-of-benefit
+  - type: Overlay
+    url: overlays/flexpa-fhir-api-overlay.yaml
 - aid: flexpa:flexpa-link-api
   name: Flexpa Link API
   description: The Link API from Flexpa — 1 operation(s) for link.
@@ -117,12 +119,13 @@ apis:
   - type: Documentation
     url: https://www.flexpa.com/docs/consent
   - type: Documentation
-    url: >-
-      https://www.flexpa.com/blog/introducing-application-access-tokens-server-to-server-authentication-for-the-flexpa-fhir-api
+    url: https://www.flexpa.com/blog/introducing-application-access-tokens-server-to-server-authentication-for-the-flexpa-fhir-api
   - type: Documentation
     url: https://www.flexpa.com/docs/records
   - type: Documentation
     url: https://www.flexpa.com/docs/fhir/explanation-of-benefit
+  - type: Overlay
+    url: overlays/flexpa-link-api-overlay.yaml
 common:
 - type: AgenticAccess
   url: agentic-access/flexpa-agentic-access.yml
@@ -146,6 +149,69 @@ common:
   url: finops/flexpa-finops.yml
 - url: https://www.flexpa.com/blog
   type: Blog
+- type: WellKnown
+  url: well-known/flexpa-well-known.yml
+- type: MCPServer
+  url: mcp/flexpa-mcp.yml
+- type: ToolCrosswalk
+  url: mcp/flexpa-tool-crosswalk.yml
+- type: LLMsTxt
+  url: llms/flexpa-llms.txt
+- type: Packages
+  url: packages/flexpa-packages.yml
+- type: SDKs
+  url: packages/flexpa-packages.yml
+- type: Conventions
+  url: conventions/flexpa-conventions.yml
+- type: ErrorCatalog
+  url: errors/flexpa-problem-types.yml
+- type: Lifecycle
+  url: lifecycle/flexpa-lifecycle.yml
+- type: StatusPage
+  url: https://flexpastatus.com
+- type: ChangeLog
+  url: changelog/flexpa-changelog.yml
+- type: Conformance
+  url: conformance/flexpa-conformance.yml
+- type: Compliance
+  url: https://security.flexpa.com
+- type: TrustCenter
+  url: security/flexpa-trust-center.yml
+- type: OAuthScopes
+  url: scopes/flexpa-scopes.yml
+- type: Sandbox
+  url: sandbox/flexpa-sandbox.yml
+- type: Components
+  url: components/flexpa-components.yml
+- type: DataModel
+  url: data-model/flexpa-data-model.yml
+- type: Webhooks
+  url: asyncapi/flexpa-webhooks.yml
+- type: AgentSkill
+  url: skills/_index.yml
+- type: DeveloperPortal
+  url: https://portal.flexpa.com
+- type: APIReference
+  url: https://www.flexpa.com/docs/records
+- type: GettingStarted
+  url: https://www.flexpa.com/docs/guides/quickstart
+- type: Support
+  url: https://www.flexpa.com/docs/support
+- type: Pricing
+  url: https://www.flexpa.com/pricing
+- type: SignUp
+  url: https://www.flexpa.com/demo
+- type: TermsOfService
+  url: https://www.flexpa.com/terms
+- type: PrivacyPolicy
+  url: https://www.flexpa.com/privacy
+- type: Twitter
+  url: https://twitter.com/flexpa
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
+x-enrichment:
+  date: '2026-08-14'
+  status: enriched
+  artifacts_added: 25
+  pass: local-v1

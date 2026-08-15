@@ -1,15 +1,93 @@
-generated: '2026-07-11'
-method: derived
-source: openapi/flexpa-openapi.yml
+generated: '2026-08-14'
+method: searched
+source: https://www.flexpa.com/docs/consent + https://www.flexpa.com/docs/records + https://api.flexpa.com/.well-known/openid-configuration
+derived_from: openapi/_original/flexpa-openapi.yml
+docs: https://www.flexpa.com/docs/consent
+provider: Flexpa
+providerId: flexpa
 summary:
   types:
+  - oauth2
   - http
+  - apiKey
+  primary: OAuth 2.0 authorization code with PKCE (patient) and client_credentials (application)
 schemes:
 - name: bearerAuth
   type: http
   scheme: bearer
   bearerFormat: JWT
-  description: 'A Patient Access Token (from the authorization_code flow) or an Application
-    Access Token (from the client_credentials flow), sent as Authorization: Bearer {access_token}.'
+  description: >-
+    A Patient Access Token (authorization_code + PKCE, obtained through Flexpa
+    Consent) or an Application Access Token (client_credentials), sent as
+    Authorization: Bearer {access_token}. Application Access Tokens are JWTs
+    signed with ES256 and live 30 minutes.
+  applies_to:
+  - https://api.flexpa.com/fhir
+  - https://api.flexpa.com/mcp
   sources:
-  - openapi/flexpa-openapi.yml
+  - openapi/flexpa-access-tokens-api-openapi.yml
+  - openapi/flexpa-claims-data-api-openapi.yml
+  - openapi/flexpa-fhir-api-openapi.yml
+  - openapi/flexpa-link-api-openapi.yml
+  - https://www.flexpa.com/docs/records
+- name: oauth2
+  type: oauth2
+  description: SMART on FHIR / OAuth 2.0 with PKCE, read from live discovery metadata.
+  flows:
+  - flow: authorizationCode
+    authorizationUrl: https://api.flexpa.com/oauth/authorize
+    tokenUrl: https://api.flexpa.com/oauth/token
+    refreshUrl: https://api.flexpa.com/oauth/token
+    pkce_methods:
+    - S256
+    scopes:
+      launch/patient: Standalone patient launch context.
+      offline_access: Issue a refresh token.
+  - flow: clientCredentials
+    tokenUrl: https://api.flexpa.com/oauth/token
+    client_auth: client_secret_basic (publishable key as username, secret key as password)
+  discovery:
+  - https://api.flexpa.com/.well-known/openid-configuration
+  - https://api.flexpa.com/.well-known/oauth-authorization-server
+  - https://api.flexpa.com/.well-known/smart-configuration
+  - https://api.flexpa.com/.well-known/oauth-protected-resource
+  registration_endpoint: https://api.flexpa.com/oauth/register
+  jwks_uri: https://api.flexpa.com/.well-known/jwks.json
+  see: scopes/flexpa-scopes.yml
+- name: apiKeys
+  type: apiKey
+  in: credentials
+  description: >-
+    Publishable and secret API keys identify the application. The publishable key
+    is the OAuth client_id used on authorization URLs; the secret key is used only
+    server-side, for client_credentials and HTTP Basic authentication.
+  key_prefixes:
+  - pk_test_
+  - pk_live_
+  - sk_test_
+  - sk_live_
+  modes:
+  - test
+  - live
+authorization_url_parameters:
+- client_id (publishable key)
+- redirect_uri (must be pre-registered)
+- response_type=code
+- code_challenge + code_challenge_method=S256
+- scope (must include launch/patient)
+- flexpa_external_id (required)
+- flexpa_search_mode / flexpa_ial2_mode
+- flexpa_resume (recovery flows)
+mobile:
+  ios: ASWebAuthenticationSession (no Flexpa SDK required)
+  android: Chrome Custom Tabs; optional AppAuth-Android
+  react_native: expo-auth-session + expo-web-browser, or react-native-app-auth
+mcp_authorization:
+  endpoint: https://api.flexpa.com/mcp
+  challenge: 'WWW-Authenticate: Bearer resource_metadata="https://api.flexpa.com/.well-known/oauth-protected-resource/mcp"'
+  observed_status: 401
+  observed: '2026-08-14'
+  note: The public directory MCP server at /mcp/directory requires no authentication.
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

@@ -1,0 +1,172 @@
+generated: '2026-08-14'
+method: probed
+source: https://www.flexpa.com/docs/guides/agents
+status: published
+provider: Flexpa
+providerId: flexpa
+summary: >-
+  Flexpa ships two first-party remote MCP servers on api.flexpa.com. The patient
+  MCP server (/mcp) is OAuth-protected and exposes a patient's claims and clinical
+  record as tools; the Endpoint Directory MCP server (/mcp/directory) is public,
+  unauthenticated, and exposes the payer/provider directory. Both are Streamable
+  HTTP endpoints an MCP client POSTs to directly - there is no stdio package.
+deployment:
+  mode: remote
+  endpoint: https://api.flexpa.com/mcp
+  auth: oauth
+  verified: probed
+  note: >-
+    POST tools/list to https://api.flexpa.com/mcp returned HTTP 401
+    {"error":"invalid_token"} with
+    WWW-Authenticate: Bearer resource_metadata="https://api.flexpa.com/.well-known/oauth-protected-resource/mcp".
+    The second server, https://api.flexpa.com/mcp/directory, is also remote and
+    answers anonymously (probed 200, tool schemas archived).
+servers:
+- name: flexpa
+  title: Flexpa MCP Server (patient data)
+  url: https://api.flexpa.com/mcp
+  transport: streamable-http
+  auth: oauth
+  auth_detail: >-
+    OAuth 2.1 + PKCE per the MCP remote-authentication requirements and SMART on
+    FHIR. Accepts the same Patient Access Token or Application Access Token as
+    the FHIR API. Dynamic client registration is advertised at
+    https://api.flexpa.com/oauth/register.
+  scopes:
+  - launch/patient
+  - offline_access
+  protected_resource_metadata: https://api.flexpa.com/.well-known/oauth-protected-resource/mcp
+  probe:
+    method: tools/list
+    http_status: 401
+    body: '{"error":"invalid_token","error_description":"Authorization required to access the MCP server"}'
+    fetched: '2026-08-14'
+  tools_source: https://www.flexpa.com/docs/guides/agents
+  tools_note: >-
+    Live tools/list is auth-gated, so input schemas require an authenticated
+    introspection. The tool names and descriptions below are the provider's own
+    published list from the Agent Guide; no schemas are asserted.
+  install:
+  - client: Claude Code CLI
+    command: claude mcp add flexpa --transport http https://api.flexpa.com/mcp
+  - client: Claude Desktop / claude.ai
+    command: Settings -> Custom Connectors -> Add Custom Connector -> URL https://api.flexpa.com/mcp
+  - client: ChatGPT (paid plans, developer mode)
+    command: Settings -> Plugins -> Add app -> URL https://api.flexpa.com/mcp
+  tools:
+  - name: get_health_summary
+    description: Combined overview - demographics, insurance, recent claims.
+  - name: get_patient
+    description: Demographics (name, DOB, address, contact).
+  - name: get_coverage
+    description: Insurance plan details, member ID, coverage period.
+  - name: get_claims
+    description: Recent claims with pagination and type filtering.
+  - name: get_financial_summary
+    description: Aggregated healthcare costs across claims.
+  - name: get_problems
+    description: Condition / diagnosis list with clinical status.
+  - name: get_allergies
+    description: Allergy and intolerance records.
+  - name: get_labs
+    description: Laboratory results with values and interpretation.
+  - name: get_vitalsigns
+    description: Vital sign observations.
+  - name: get_documents
+    description: Clinical document metadata.
+  - name: get_medications
+    description: Prescriptions and pharmacy claims.
+  - name: get_immunizations
+    description: Vaccination records.
+  - name: get_procedures
+    description: Clinical procedures with dates and performers.
+  - name: get_visits
+    description: Encounter / visit records.
+  - name: get_care_team
+    description: Deduplicated care team members across sources.
+  - name: find_in_record
+    description: Natural-language search across all health data.
+  - name: get_document_content
+    description: Extracts text from clinical documents.
+  - name: fhir_read
+    description: Reads specific FHIR resources by ID.
+  resources_note: >-
+    The Agent Guide also documents URI-addressed MCP resources such as
+    flexpa://patient, flexpa://health-summary and flexpa://fhir/Patient, plus
+    pre-defined prompts. Not enumerated here beyond what the docs publish.
+- name: flexpa-directory
+  title: Flexpa Endpoint Directory MCP Server
+  url: https://api.flexpa.com/mcp/directory
+  transport: streamable-http
+  auth: none
+  server_info:
+    name: flexpa-directory
+    version: 1.0.0
+    protocolVersion: '2025-06-18'
+    capabilities:
+      tools:
+        listChanged: true
+      prompts:
+        listChanged: true
+  probe:
+    method: tools/list
+    http_status: 200
+    fetched: '2026-08-14'
+    file: flexpa-directory-tools.json
+  rate_limit: 60 requests per minute, HTTP 429 on exhaustion (per the Directory MCP docs).
+  install:
+  - client: Claude Code CLI
+    command: claude mcp add flexpa-directory --transport http https://api.flexpa.com/mcp/directory
+  - client: Claude Desktop / claude.ai
+    command: Settings -> Custom Connectors -> Add Custom Connector -> URL https://api.flexpa.com/mcp/directory
+  tools:
+  - name: search_endpoints
+    title: Search Health Insurance Providers
+    description: Search the Flexpa Endpoint Directory to find health insurance payers and healthcare providers.
+    input:
+      required:
+      - query
+  - name: get_endpoint_details
+    title: Get Endpoint Details
+    description: Get detailed information about a specific health insurance endpoint.
+    input:
+      required:
+      - endpointId
+  - name: check_lob_support
+    title: Check Line of Business Support
+    description: Validate if a specific endpoint supports a line of business and determine the authentication flow.
+    input:
+      required:
+      - endpointId
+      - lineOfBusiness
+      enums:
+        lineOfBusiness:
+        - medicaid
+        - medicare_advantage
+        - chip
+        - aca_on_exchange
+        - aca_off_exchange
+        - employer
+        - original_medicare
+        - veterans
+  - name: list_endpoints
+    title: List All Connected Endpoints
+    description: List all connected health insurance endpoints in the directory.
+    input:
+      optional:
+      - status
+      - lobType
+      - limit
+  prompts:
+  - name: find_insurance
+    description: Help a user find and connect their health insurance provider.
+  - name: find_provider
+    description: Help a user find their healthcare provider or medical record system.
+  - name: explore_directory
+    description: Browse the health insurance endpoint directory.
+docs:
+- https://www.flexpa.com/docs/guides/agents
+- https://www.flexpa.com/docs/network/directory-mcp
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

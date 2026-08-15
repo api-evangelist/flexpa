@@ -1,0 +1,128 @@
+generated: '2026-08-14'
+method: searched
+source: https://api.flexpa.com/.well-known/smart-configuration + https://www.flexpa.com/docs/records + https://my.flexpa.com
+provider: Flexpa
+providerId: flexpa
+summary: >-
+  Flexpa's conformance posture is unusually well evidenced for a startup: SMART on
+  FHIR capabilities, OAuth 2.0 authorization-server metadata and OIDC discovery
+  are all served as machine-readable documents from api.flexpa.com, and the data
+  layer is FHIR R4. RFC 9457 is explicitly NOT used - errors are FHIR
+  OperationOutcome. Compliance claims (SOC II, HIPAA, CARIN Code of Conduct) are
+  published on Flexpa's own properties but the trust centre itself renders
+  client-side, so no certificate documents were machine-readable.
+standards:
+- id: fhir-r4
+  conforms: true
+  evidence: >-
+    All resources are FHIR R4; /fhir/metadata returns a CapabilityStatement
+    (operationId getCapabilityStatement) and responses use application/fhir+json.
+- id: smart-on-fhir
+  conforms: true
+  evidence: >-
+    https://api.flexpa.com/.well-known/smart-configuration (HTTP 200) declares
+    capabilities launch-standalone, client-public,
+    client-confidential-symmetric, context-standalone-patient,
+    permission-offline, permission-patient.
+- id: oauth2
+  conforms: true
+  evidence: >-
+    Authorization code + PKCE (S256) and client_credentials; token endpoint auth
+    client_secret_basic and none.
+- id: rfc8414-oauth-authorization-server-metadata
+  conforms: true
+  evidence: https://api.flexpa.com/.well-known/oauth-authorization-server (HTTP 200).
+- id: rfc9728-oauth-protected-resource-metadata
+  conforms: true
+  evidence: >-
+    https://api.flexpa.com/.well-known/oauth-protected-resource (HTTP 200) and the
+    resource-scoped /.well-known/oauth-protected-resource/mcp path referenced by
+    the MCP 401 WWW-Authenticate challenge.
+- id: oidc-discovery
+  conforms: true
+  evidence: https://api.flexpa.com/.well-known/openid-configuration (HTTP 200), issuer https://api.flexpa.com.
+- id: rfc7591-dynamic-client-registration
+  conforms: partial
+  evidence: >-
+    registration_endpoint https://api.flexpa.com/oauth/register is advertised in
+    both discovery documents; registration behaviour was not exercised.
+- id: pkce-rfc7636
+  conforms: true
+  evidence: code_challenge_methods_supported ["S256"].
+- id: mcp
+  conforms: true
+  evidence: >-
+    Two Streamable HTTP MCP servers; initialize returned protocolVersion
+    2025-06-18 and serverInfo flexpa-directory 1.0.0 on the public server.
+- id: sql-on-fhir-v2
+  conforms: true
+  evidence: >-
+    POST /fhir/ViewDefinition/$run (operationId runViewDefinition) implements
+    SQL-on-FHIR ViewDefinition extraction; Flexpa also maintains a fork of the
+    SQL-on-FHIR v2 implementation guide at github.com/flexpa/sql-on-fhir-v2.
+- id: ips-international-patient-summary
+  conforms: true
+  evidence: /fhir/Patient/{id}/$summary (operationId patientSummary) generates an IPS document.
+- id: carin-blue-button
+  conforms: partial
+  evidence: >-
+    ExplanationOfBenefit claims delivery is the CARIN Blue Button use case and
+    Flexpa is a published signatory of the CARIN Code of Conduct, but no
+    conformance statement against the CARIN IG profile is published.
+- id: tefca
+  conforms: true
+  evidence: >-
+    Nationwide exchange connections and IAL2 identity verification are documented
+    (test-mode identity providers ID.me and CLEAR; C-CDA to FHIR transformation).
+- id: onc-chpl
+  conforms: n/a
+  evidence: >-
+    Flexpa is not itself a certified health IT product; it surfaces ONC CHPL
+    certified-product listings for network endpoints via the directory
+    (get_endpoint_details) and the ONC CHPL g(10) certified directory blog post.
+- id: rfc9457-problem-details
+  conforms: false
+  evidence: Errors are FHIR OperationOutcome in application/fhir+json, not application/problem+json.
+- id: rfc8594-sunset-header
+  conforms: false
+  evidence: No Sunset/Deprecation header or deprecation policy published.
+- id: idempotency-key
+  conforms: false
+  evidence: No request idempotency-key mechanism documented; webhook event_id covers receiver-side de-duplication only.
+- id: rate-limit-headers
+  conforms: partial
+  evidence: >-
+    X-RateLimit-Limit / X-RateLimit-Remaining / X-RateLimit-Reset and Retry-After
+    are documented, i.e. the legacy X- form rather than the IETF RateLimit-*
+    draft header fields.
+compliance:
+  published: true
+  page: https://security.flexpa.com
+  claims:
+  - name: SOC 2 (stated as "SOC II")
+    status: claimed
+    source: https://my.flexpa.com
+    quote_source: >-
+      "Our platform undergoes rigorous independent SOC II audits, validating our
+      enterprise-grade security controls."
+  - name: HIPAA
+    status: claimed
+    source: https://my.flexpa.com
+    note: >-
+      Flexpa's privacy notice is precise about the boundary - Flexpa "is not a
+      'covered entity' under HIPAA" and may act as a business associate for
+      covered-entity customers.
+  - name: CARIN Alliance Code of Conduct
+    status: signatory
+    source: https://www.flexpa.com/carin-code-of-conduct
+    note: >-
+      The page serves the CARIN Trust Framework and Code of Conduct v2.0 PDF;
+      Flexpa states it is a signatory on my.flexpa.com and links the code from
+      every site footer.
+  gaps:
+  - No SOC 2 report date, auditor or Type (I/II) is published.
+  - No ISO 27001, HITRUST or FedRAMP claim found.
+  - The trust centre at security.flexpa.com renders client-side, so certificate artefacts could not be read by machine.
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

@@ -1,0 +1,98 @@
+generated: '2026-08-14'
+method: searched
+source: https://www.flexpa.com/docs/test-mode
+provider: Flexpa
+providerId: flexpa
+summary: >-
+  Flexpa runs a full test mode with its own key pair prefixes and a published set
+  of synthetic patients. Because Flexpa brokers connections to real payer and EHR
+  sandboxes, its "test data" is mostly other people's sandbox credentials - Epic,
+  Cerner and Athena test logins, plus TEFCA identity-proofing test accounts. Test
+  mode is provisioned during onboarding, not self-serve.
+modes:
+- name: test
+  key_prefixes:
+  - pk_test_
+  - sk_test_
+  data: Synthetic patients and partner sandbox endpoints; FooMedical remains available here after its 2026-08-14 removal from live mode.
+- name: live
+  key_prefixes:
+  - pk_live_
+  - sk_live_
+  gate: >-
+    Requires a signed MSA plus a publicly accessible privacy policy and terms of
+    service on the customer's side. There is no free live tier.
+access:
+  self_serve: false
+  provisioning: Demo intake at https://www.flexpa.com/demo, then sandbox keys and a shared Slack channel.
+test_payers:
+- name: FooMedical
+  search_as: FooMedical
+  note: Primary synthetic payer; all logins below use the same password.
+  patients:
+  - user: patient1@flexpa.com
+    coverage: Coverage, EOBs
+    plan: UnitedHealthcare Medicare Advantage
+  - user: patient2@flexpa.com
+    coverage: Coverage, EOBs, clinical data
+    plan: Aetna Medicare Advantage
+  - user: patient3@flexpa.com
+    coverage: Coverage, EOBs, clinical data
+    plan: Humana Medicare Advantage
+  - user: patient30@flexpa.com
+    coverage: Medical and pharmacy EOBs, clinical data
+    plan: Aetna Medicare Advantage
+  - user: patient31@flexpa.com
+    coverage: All four Medicare parts including Part D
+    plan: Medicare.gov
+  shared_password: examplepatient
+- name: Acme Health Plan
+  note: Powered by mock.health; any patient may be selected, no credentials required.
+test_ehrs:
+- system: Epic
+  username: fhirelijah
+  password: epicepic1
+- system: Cerner
+  username: wilmasmart
+  password: Cerner01
+- system: Athena
+  username: phrtest_preview@mailinator.com
+  password: Password1
+- system: YourChart (Epic-style)
+  note: No credentials required.
+identity_verification:
+- provider: ID.me
+  test_password: IDme2026!!
+  status: Flexpa's docs note the ID.me test accounts are currently broken in test mode.
+- provider: CLEAR
+  mfa_code: '123456'
+test_identities:
+- Allison Hackett
+- Damon Mychart
+- Dog Beaker
+- Tracy CraneTest
+- Barbara Testa
+- Camila Maria Lopez
+- Derrick Lin
+- Homer J Simpson
+fixtures:
+  tefca_documents:
+  - FLEXPA-TEST-001
+  - FLEXPA-TEST-002
+  - FLEXPA-TEST-003
+  note: Auto-injected when the QHIN returns no data for a test connection.
+webhooks:
+  mode_specific: true
+  note: Webhook endpoints and secrets are configured per mode (test and live) in Flexpa Portal.
+tooling:
+- name: MCP Inspector
+  note: Flexpa's Agent Guide recommends it for exercising the MCP server with a valid access token.
+- name: Quickstart sample app
+  url: https://github.com/flexpa/quickstart
+caveats: >-
+  Every credential above is a published synthetic test credential from Flexpa's
+  public documentation. None of it is a Flexpa production secret and none of it
+  was invented here.
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

@@ -1,0 +1,70 @@
+generated: '2026-08-14'
+method: searched
+source: https://api.flexpa.com/.well-known/oauth-authorization-server
+docs: https://www.flexpa.com/docs/consent
+provider: Flexpa
+providerId: flexpa
+summary: >-
+  Flexpa's OAuth scope surface is SMART on FHIR's, not a bespoke permission
+  taxonomy: exactly two scopes are advertised by the authorization server, and
+  both were read from live discovery documents rather than inferred. The captured
+  OpenAPI declares only a bearer scheme, so this artifact is the only place the
+  scope contract is recorded.
+schemes:
+- name: OAuth 2.0 / SMART on FHIR
+  source: https://api.flexpa.com/.well-known/oauth-authorization-server
+  issuer: https://api.flexpa.com
+  flows:
+  - flow: authorizationCode
+    authorizationUrl: https://api.flexpa.com/oauth/authorize
+    tokenUrl: https://api.flexpa.com/oauth/token
+    pkce: S256
+    note: Produces a Patient Access Token via the Flexpa Consent experience.
+  - flow: clientCredentials
+    tokenUrl: https://api.flexpa.com/oauth/token
+    note: >-
+      Produces an Application Access Token (server-to-server), authenticated with
+      HTTP Basic using publishable key as username and secret key as password.
+  - flow: refreshToken
+    tokenUrl: https://api.flexpa.com/oauth/token
+  registration_endpoint: https://api.flexpa.com/oauth/register
+  jwks_uri: https://api.flexpa.com/.well-known/jwks.json
+  token_endpoint_auth_methods:
+  - client_secret_basic
+  - none
+scopes:
+- name: launch/patient
+  description: >-
+    SMART on FHIR standalone patient launch context. Required on every
+    authorization URL; grants read access to the authorizing patient's compartment
+    (Patient, Coverage, ExplanationOfBenefit and the clinical resources Flexpa
+    derives).
+  required: true
+  surfaces:
+  - https://api.flexpa.com/fhir
+  - https://api.flexpa.com/mcp
+- name: offline_access
+  description: >-
+    Issues a refresh token so the application can continue retrieving the
+    patient's data after the initial access token expires. Corresponds to the
+    permission-offline SMART capability.
+  required: false
+  surfaces:
+  - https://api.flexpa.com/fhir
+  - https://api.flexpa.com/mcp
+smart_capabilities:
+- launch-standalone
+- client-public
+- client-confidential-symmetric
+- context-standalone-patient
+- permission-offline
+- permission-patient
+notes: >-
+  Scope granularity is patient-compartment-wide; there is no per-resource scope
+  (no patient/ExplanationOfBenefit.read style scopes) and no scope that
+  distinguishes claims from clinical data. The MCP server at
+  https://api.flexpa.com/mcp is protected by the same two scopes, per
+  /.well-known/oauth-protected-resource.
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

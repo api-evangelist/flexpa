@@ -1,0 +1,47 @@
+generated: '2026-08-14'
+method: generated
+source: openapi/ + https://www.flexpa.com/docs
+provider: Flexpa
+providerId: flexpa
+summary: >-
+  Four packaged Agent Skills covering Flexpa's marquee flows, each grounded in
+  operationIds that exist in the captured OpenAPI files (or, for the directory
+  skill, in a live-probed public surface). Flexpa publishes no skills or AGENTS.md
+  of its own; these are API Evangelist generated.
+provider_published_skills: false
+skills:
+- name: flexpa-connect-patient
+  file: flexpa-connect-patient.md
+  description: Consent flow, PKCE token exchange, and the 429 "still syncing" state.
+  operations:
+  - authorize
+  - token
+  - searchPatient
+- name: flexpa-read-claims
+  file: flexpa-read-claims.md
+  description: Coverage and ExplanationOfBenefit reads with FHIR pagination and OperationOutcome handling.
+  operations:
+  - searchCoverage
+  - readCoverage
+  - searchExplanationOfBenefit
+  - readExplanationOfBenefit
+  - patientEverything
+  - patientSummary
+- name: flexpa-find-payer-endpoint
+  file: flexpa-find-payer-endpoint.md
+  description: Anonymous network-directory resolution to a connectable endpoint and the right auth flow.
+  operations:
+  - searchOrganization
+  surfaces:
+  - https://api.flexpa.com/endpoints
+  - https://api.flexpa.com/mcp/directory
+- name: flexpa-extract-tabular
+  file: flexpa-extract-tabular.md
+  description: SQL-on-FHIR ViewDefinition extraction and whole-record PDF export.
+  operations:
+  - runViewDefinition
+  - patientPdf
+  - patientEverything
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

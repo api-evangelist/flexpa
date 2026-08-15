@@ -1,0 +1,187 @@
+generated: '2026-08-14'
+method: derived
+source: openapi/_original/flexpa-openapi.yml + https://www.flexpa.com/docs/records/data-sheet + https://api.flexpa.com/endpoints
+provider: Flexpa
+providerId: flexpa
+summary: >-
+  Flexpa's data model is FHIR R4's, so the entity graph is inherited rather than
+  invented: Patient is the compartment root and every clinical or financial
+  resource belongs to it through a patient reference. Flexpa adds two proprietary
+  entities on top - the Application (keys, webhooks, mode) and the Endpoint
+  (a payer or provider connection in the network directory), which is the only
+  entity addressable without a patient authorization.
+identifiers:
+  style: uuid
+  note: >-
+    Endpoint and organization ids are UUIDs; FHIR resource ids are opaque strings
+    scoped to the endpoint. No typed id prefixes are published.
+entities:
+- name: Patient
+  fhir: Patient
+  root: true
+  description: The authorizing patient; the compartment root for every clinical and financial resource.
+  operations:
+  - searchPatient
+  - readPatient
+  - patientEverything
+  - patientSummary
+  - patientPdf
+  relationships:
+  - type: has_many
+    target: Coverage
+    via: Coverage.beneficiary
+  - type: has_many
+    target: ExplanationOfBenefit
+    via: ExplanationOfBenefit.patient
+  - type: has_many
+    target: Condition
+    via: Condition.subject
+  - type: has_many
+    target: Observation
+    via: Observation.subject
+  - type: has_many
+    target: MedicationRequest
+    via: MedicationRequest.subject
+  - type: has_many
+    target: Procedure
+    via: Procedure.subject
+  - type: has_many
+    target: Encounter
+    via: Encounter.subject
+  - type: has_many
+    target: Immunization
+    via: Immunization.patient
+  - type: has_many
+    target: AllergyIntolerance
+    via: AllergyIntolerance.patient
+  - type: has_many
+    target: DocumentReference
+    via: DocumentReference.subject
+- name: Coverage
+  fhir: Coverage
+  description: Health-plan enrolment - payer, member id, plan and coverage period.
+  operations:
+  - searchCoverage
+  - readCoverage
+  relationships:
+  - type: belongs_to
+    target: Patient
+    via: beneficiary
+  - type: has_one
+    target: Organization
+    via: payor
+  - type: has_one
+    target: InsurancePlan
+    via: derived plan metadata (added 2026-07-08 for Medicare Advantage Part C)
+- name: ExplanationOfBenefit
+  fhir: ExplanationOfBenefit
+  description: The adjudicated claim - the financial core of the platform.
+  operations:
+  - searchExplanationOfBenefit
+  - readExplanationOfBenefit
+  relationships:
+  - type: belongs_to
+    target: Patient
+    via: patient
+  - type: belongs_to
+    target: Coverage
+    via: insurance.coverage
+  - type: has_one
+    target: Practitioner
+    via: provider
+  - type: has_one
+    target: Organization
+    via: insurer
+  search_parameters:
+  - patient
+  - created
+  - provider
+  - coverage
+  - status
+  - identifier
+- name: Practitioner
+  fhir: Practitioner
+  description: Individual clinician, searchable by NPI, name or specialty.
+  operations:
+  - searchPractitioner
+- name: Organization
+  fhir: Organization
+  description: Payer, facility or provider organization, searchable by NPI, name or location.
+  operations:
+  - searchOrganization
+- name: Bundle
+  fhir: Bundle
+  description: Search-set envelope carrying entry[] plus self/first/next/previous links and total.
+  relationships:
+  - type: has_many
+    target: any FHIR resource
+    via: entry.resource
+- name: CapabilityStatement
+  fhir: CapabilityStatement
+  description: What the connected endpoint supports.
+  operations:
+  - getCapabilityStatement
+- name: Endpoint
+  fhir: null
+  proprietary: true
+  description: >-
+    A payer or provider connection in the Flexpa network directory. Publicly
+    readable at GET https://api.flexpa.com/endpoints without authorization.
+  fields:
+  - id
+  - name
+  - label[]
+  - mode (TEST | LIVE)
+  - status (CONNECTED | IN_PROGRESS | BROKEN | UNKNOWN | UNAVAILABLE)
+  - refreshable
+  - refreshValidFor
+  - maxAuthPeriod
+  - resources[] (FHIR resource types the endpoint supports)
+  - useMTLS
+  - developerPortal
+  - allowsFinancialCalculation
+  - updatedAt
+  relationships:
+  - type: belongs_to
+    target: EndpointOrganization
+    via: organization
+- name: EndpointOrganization
+  proprietary: true
+  description: The payer or provider behind an endpoint, carrying line-of-business support flags.
+  fields:
+  - id
+  - name
+  - supportsMedicaidLOB
+  - supportsMedicareLOB
+  - supportsFullyFundedLOB
+  - supportsSelfFundedLOB
+  - supportsACAOnExLOB
+  - supportsACAOffExLOB
+  - supportsCHIPLOB
+- name: Application
+  proprietary: true
+  description: >-
+    The Flexpa customer's application - publishable/secret key pair, mode,
+    redirect URIs, webhook endpoints and secrets, sync frequency.
+  managed_in: https://portal.flexpa.com
+  relationships:
+  - type: has_many
+    target: PatientAuthorization
+    via: access tokens issued through Flexpa Consent
+- name: PatientAuthorization
+  proprietary: true
+  description: >-
+    A patient's consent grant to one application for one endpoint - carries the
+    access token, refresh eligibility and external_id supplied by the application.
+  fields:
+  - external_id (flexpa_external_id)
+  - scope (launch/patient, offline_access)
+  - refreshable
+  events:
+  - sync_completed
+  - sync_failed
+  - refresh_expired
+render: null
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

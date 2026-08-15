@@ -1,0 +1,171 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Flexpa Access Tokens FHIR API",
+    "version": "1.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "FHIR",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "FHIR capability statement.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.flexpa.com/fhir/metadata"
+          },
+          "docs": "Returns the FHIR CapabilityStatement describing supported resources and operations."
+        },
+        {
+          "info": {
+            "name": "Search Patient resources.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.flexpa.com/fhir/Patient",
+            "params": [
+              {
+                "name": "identifier",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Search Patient resources."
+        },
+        {
+          "info": {
+            "name": "Read a single Patient resource.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.flexpa.com/fhir/Patient/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Read a single Patient resource."
+        },
+        {
+          "info": {
+            "name": "Search Coverage resources.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.flexpa.com/fhir/Coverage",
+            "params": [
+              {
+                "name": "patient",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "status",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Search Coverage resources."
+        },
+        {
+          "info": {
+            "name": "Read a single Coverage resource.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.flexpa.com/fhir/Coverage/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Read a single Coverage resource."
+        },
+        {
+          "info": {
+            "name": "Search individual providers by NPI, name, or specialty.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.flexpa.com/fhir/Practitioner",
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Search individual providers by NPI, name, or specialty."
+        },
+        {
+          "info": {
+            "name": "Search healthcare organizations by NPI, name, or location.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.flexpa.com/fhir/Organization",
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Search healthcare organizations by NPI, name, or location."
+        },
+        {
+          "info": {
+            "name": "Extract structured (tabular) data using a SQL-on-FHIR ViewDefinition.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.flexpa.com/fhir/ViewDefinition/$run",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Extract structured (tabular) data using a SQL-on-FHIR ViewDefinition."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

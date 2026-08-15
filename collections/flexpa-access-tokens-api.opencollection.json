@@ -1,0 +1,33 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Flexpa Access Tokens API",
+    "version": "1.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Access Tokens",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Exchange a code, refresh a token, or mint an Application Access Token.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.flexpa.com/oauth/token",
+            "body": {
+              "type": "form-urlencoded",
+              "data": []
+            }
+          },
+          "docs": "The token endpoint supports the authorization_code grant (with PKCE code_verifier) to obtain a Patient Access Token, the refresh_token grant to renew it, and the client_credentials grant (Basic auth with publishable_key:secret_key) to mint a server-to-server Application Access Token. Application Access Tokens are JWTs signed with ES256 and live for 30 minutes."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

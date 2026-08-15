@@ -1,0 +1,36 @@
+generated: '2026-08-14'
+method: probed
+source: https://security.flexpa.com
+provider: Flexpa
+providerId: flexpa
+trust_center:
+  url: https://security.flexpa.com
+  http_status: 200
+  title: Trust center
+  machine_readable: false
+  note: >-
+    A dedicated trust-centre subdomain is served, but it is a client-rendered
+    single-page app - the HTML shell carries only <title>Trust center</title>, and
+    the same shell is returned for every path including
+    /.well-known/security.txt and /api/*. No certification documents, subprocessor
+    list or NDA-gated request flow could be read without executing JavaScript.
+  probed: '2026-08-14'
+certifications:
+- name: SOC 2 (published as "SOC II")
+  status: claimed
+  evidence_url: https://my.flexpa.com
+  report_available: unknown
+- name: HIPAA
+  status: claimed
+  evidence_url: https://my.flexpa.com
+  note: Flexpa states it is not a HIPAA covered entity; it may act as a business associate.
+- name: CARIN Alliance Code of Conduct
+  status: signatory
+  evidence_url: https://www.flexpa.com/carin-code-of-conduct
+contacts:
+  privacy: privacy@flexpa.com
+  support: support@flexpa.com
+  security: null
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

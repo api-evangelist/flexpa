@@ -1,0 +1,60 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for Flexpa Access Tokens API
+  version: 1.0.0
+extends: openapi/flexpa-access-tokens-api-openapi.yml
+x-provenance:
+  generated: '2026-08-14'
+  method: derived
+  source: >-
+    https://www.flexpa.com/docs/records, https://www.flexpa.com/docs/consent and
+    the live discovery documents at https://api.flexpa.com/.well-known/*
+  note: >-
+    Captures corrections and runtime semantics observed during enrichment. The
+    underlying OpenAPI is never mutated.
+actions:
+- target: $.info
+  update:
+    termsOfService: https://www.flexpa.com/terms
+    x-apievangelist-note: >-
+      The harvested spec carried termsOfService https://www.flexpa.com/legal/terms,
+      which returns HTTP 404. The live terms of service is
+      https://www.flexpa.com/terms (HTTP 200, probed 2026-08-14).
+- target: $.info
+  update:
+    x-apievangelist-title: Flexpa Access Tokens API
+    x-apievangelist-reference: https://www.flexpa.com/docs/consent
+- target: $.info
+  update:
+    x-agent-surfaces:
+      mcp:
+      - url: https://api.flexpa.com/mcp
+        auth: oauth
+      - url: https://api.flexpa.com/mcp/directory
+        auth: none
+      llms_txt: https://www.flexpa.com/docs/llms.txt
+      webhooks: https://www.flexpa.com/docs/records/webhooks
+- target: $.components.securitySchemes.bearerAuth
+  update:
+    x-oauth-discovery:
+      openid_configuration: https://api.flexpa.com/.well-known/openid-configuration
+      authorization_server: https://api.flexpa.com/.well-known/oauth-authorization-server
+      smart_configuration: https://api.flexpa.com/.well-known/smart-configuration
+      scopes:
+      - launch/patient
+      - offline_access
+- target: $.info
+  update:
+    x-rate-limit-signal:
+      status: 429
+      headers:
+      - Retry-After
+      - X-RateLimit-Limit
+      - X-RateLimit-Remaining
+      - X-RateLimit-Reset
+      note: >-
+        A 429 carrying OperationOutcome issue.code "transient" means the payer
+        sync is still running, not that a quota was exceeded; issue.code
+        "throttled" is the real rate limit.
+    x-error-format: fhir-operation-outcome
+    x-request-id-header: X-Request-Id

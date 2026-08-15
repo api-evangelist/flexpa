@@ -1,0 +1,88 @@
+generated: '2026-08-14'
+method: probed
+source: live GET probes of every apis.yml host and OpenAPI servers[] host
+provider: Flexpa
+providerId: flexpa
+summary: >-
+  api.flexpa.com serves a real, unauthenticated discovery surface: OIDC discovery
+  (RFC 8414 / OpenID Connect), OAuth 2.0 authorization-server metadata, an OAuth
+  protected-resource document that names the hosted MCP server as the protected
+  resource, and a SMART on FHIR configuration. No security.txt, api-catalog,
+  ai-plugin.json or A2A agent card is served on any host.
+hosts:
+- host: https://api.flexpa.com
+  documents:
+  - path: /.well-known/openid-configuration
+    status: 200
+    content_type: application/json
+    file: flexpa-openid-configuration.json
+  - path: /.well-known/oauth-authorization-server
+    status: 200
+    content_type: application/json
+    file: flexpa-oauth-authorization-server.json
+  - path: /.well-known/oauth-protected-resource
+    status: 200
+    content_type: application/json
+    file: flexpa-oauth-protected-resource.json
+    note: >-
+      Declares resource https://api.flexpa.com/mcp with authorization server
+      https://api.flexpa.com and scopes launch/patient, offline_access.
+  - path: /.well-known/oauth-protected-resource/mcp
+    status: 200
+    content_type: application/json
+    note: Same document, served at the RFC 9728 resource-scoped path the MCP 401 challenge points to.
+  - path: /.well-known/smart-configuration
+    status: 200
+    content_type: application/json
+    file: flexpa-smart-configuration.json
+    note: >-
+      SMART on FHIR capabilities launch-standalone, client-public,
+      client-confidential-symmetric, context-standalone-patient,
+      permission-offline, permission-patient.
+  - path: /.well-known/jwks.json
+    status: 200
+    content_type: application/json
+    note: Signing keys for Flexpa-issued JWT access tokens. Body not archived here.
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+- host: https://www.flexpa.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+    note: Next.js catch-all returns an HTML 404 page.
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+- host: https://security.flexpa.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 200
+    content_type: text/html
+    served: false
+    note: >-
+      NOT a document. The trust-center single-page app answers 200 with its HTML
+      shell (<title>Trust center</title>) for this path, so this is recorded as a
+      miss and no SecurityTxt pointer is emitted.
+findings:
+  well_known_documents_served: 6
+  security_txt_served: false
+  api_catalog_served: false
+  agent_card_served: false
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

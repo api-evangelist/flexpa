@@ -1,0 +1,145 @@
+{
+  "tools": [
+    {
+      "name": "search_endpoints",
+      "title": "Search Health Insurance Providers",
+      "description": "Search the Flexpa Endpoint Directory to find health insurance payers and healthcare providers.\n\n## When to Use\nCall this tool when a user mentions their health insurance company, plan, or payer.\n\n## Search Tips\n- Search by insurer name: \"Aetna\", \"Cigna\", \"United Healthcare\", \"Humana\", \"Kaiser\"\n- Search by provider name: \"Mayo Clinic\", \"Cleveland Clinic\", \"Kaiser Permanente\"\n- Search by acronym: \"BCBS\", \"UHC\", \"HCSC\"\n- Search by state for regional insurers: \"Illinois\", \"Texas\", \"California\"\n\n## CRITICAL: Blue Cross Blue Shield (BCBS) Handling\nBCBS is a federation of independent companies, NOT a single insurer. Each state has different BCBS entities:\n- If user says \"Blue Cross\", \"Blue Shield\", or \"BCBS\", you MUST ask: \"Which state is your Blue Cross Blue Shield plan from?\"\n- Then search for \"BCBS [state]\" (e.g., \"BCBS Illinois\", \"BCBS Texas\")\n- Common BCBS entities: BCBS of Illinois, BCBS of Texas, Anthem (CA, IN, others), Highmark (PA, WV, DE), CareFirst (DC, MD, VA)\n\n## CRITICAL: Medicaid Handling\nMedicaid is a state-run program with different names and plans in each state:\n- If user says \"Medicaid\", ask: \"Which state is your Medicaid coverage from?\"\n- Then search for the state's Medicaid program name\n- Examples: \"Medi-Cal\" (California), \"BadgerCare\" (Wisconsin), \"Peach State\" (Georgia)\n\n## Results\nReturns up to 10 matching endpoints with:\n- id: Unique endpoint identifier (use this for subsequent API calls)\n- name: Internal endpoint name (e.g., \"aetna\", \"bcbs-illinois\")\n- label: Display names/brands\n- organizationName: Full organization name\n- organizationType: PAYER, PROVIDER, or VENDOR\n- isBCBS: Whether this is a Blue Cross Blue Shield entity\n- status: Connection status (only CONNECTED endpoints are usable)",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search query - insurer name, brand, acronym, or state. Examples: \"Aetna\", \"BCBS Illinois\", \"United Healthcare\", \"Humana\""
+          }
+        },
+        "required": [
+          "query"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "openWorldHint": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "get_endpoint_details",
+      "title": "Get Endpoint Details",
+      "description": "Get detailed information about a specific health insurance endpoint.\n\n## When to Use\nCall this after search_endpoints to get full details about a specific endpoint before initiating a connection.\n\n## Returns\n- Full endpoint configuration\n- Supported lines of business with authentication flow info\n- Connection status and availability\n- Features like inactive member access, 2FA requirements\n- Sign-up links for account registration\n- ONC CHPL certified product listings linked to this endpoint (developer name, product, certification status, API docs)",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "endpointId": {
+            "type": "string",
+            "description": "The endpoint ID from search_endpoints results"
+          }
+        },
+        "required": [
+          "endpointId"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "openWorldHint": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "check_lob_support",
+      "title": "Check Line of Business Support",
+      "description": "Validate if a specific endpoint supports a line of business and determine the authentication flow.\n\n## When to Use\nCall this after identifying the endpoint to validate support and get the correct auth flow before initiating connection.\n\n## Line of Business Types\n- `medicaid` - State Medicaid programs \u2192 OAuth flow\n- `medicare_advantage` - Medicare Part C plans \u2192 OAuth flow\n- `chip` - Children's Health Insurance Program \u2192 OAuth flow\n- `aca_on_exchange` - ACA Marketplace plans (Healthcare.gov) \u2192 OAuth flow\n- `aca_off_exchange` - ACA plans bought directly from insurer \u2192 OAuth or Credentials flow\n- `employer` - Employer-sponsored plans \u2192 OAuth or Credentials flow\n- `original_medicare` - Traditional Medicare (medicare.gov) \u2192 Special endpoint\n- `veterans` - VA health benefits \u2192 Special endpoint\n\n## CRITICAL: Determining Line of Business\nWhen a user says they have \"individual\" or \"family\" plan, you MUST ask:\n\"Where did you purchase this plan - through Healthcare.gov/state exchange, or directly from the insurance company?\"\n- Healthcare.gov/State Exchange \u2192 aca_on_exchange (OAuth)\n- Directly from insurer \u2192 aca_off_exchange (OAuth or Credentials)\n\n## Authentication Flows\n1. **OAuth Flow**: User is redirected to the payer's login page\n2. **Credentials Flow**: User provides username/password within your app\n\n## Returns\n- Whether the endpoint supports the LOB\n- Which authentication flow to use\n- Whether the endpoint is currently connected/available",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "endpointId": {
+            "type": "string",
+            "description": "The endpoint ID from search_endpoints"
+          },
+          "lineOfBusiness": {
+            "type": "string",
+            "enum": [
+              "medicaid",
+              "medicare_advantage",
+              "chip",
+              "aca_on_exchange",
+              "aca_off_exchange",
+              "employer",
+              "original_medicare",
+              "veterans"
+            ],
+            "description": "The line of business to check"
+          }
+        },
+        "required": [
+          "endpointId",
+          "lineOfBusiness"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "openWorldHint": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "list_endpoints",
+      "title": "List All Connected Endpoints",
+      "description": "List all connected health insurance endpoints in the directory.\n\n## When to Use\nUse this to get an overview of all available payers or to filter by specific criteria.\n\n## Filters\n- status: Filter by connection status (default: CONNECTED only)\n- lobType: Filter by line of business support\n\n## Note\nThis returns a paginated list. For large directories, use search_endpoints with specific queries instead.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "status": {
+            "description": "Filter by endpoint status (default: CONNECTED)",
+            "type": "string",
+            "enum": [
+              "CONNECTED",
+              "IN_PROGRESS",
+              "BROKEN",
+              "UNKNOWN",
+              "UNAVAILABLE"
+            ]
+          },
+          "lobType": {
+            "description": "Filter by line of business support",
+            "type": "string",
+            "enum": [
+              "medicaid",
+              "medicare_advantage",
+              "chip",
+              "aca_on_exchange",
+              "aca_off_exchange",
+              "employer",
+              "original_medicare",
+              "veterans"
+            ]
+          },
+          "limit": {
+            "description": "Maximum results to return (default 50, max 100)",
+            "type": "number"
+          }
+        }
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "openWorldHint": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    }
+  ]
+}

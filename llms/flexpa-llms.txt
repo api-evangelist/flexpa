@@ -1,0 +1,121 @@
+# Flexpa Documentation
+
+> Flexpa is a healthcare data platform providing patient-consented health insurance claims, plan details, and medical records through FHIR R4 compliant APIs. The platform consists of Flexpa Link (a secure consent SDK), Flexpa API (FHIR-based REST API), and access to the largest network of payer FHIR endpoints in the US.
+
+## Core Concepts
+
+Flexpa operates through three main components:
+
+- **Network**: The largest directory of payer FHIR endpoints in the US, providing access to health plans and insurers
+- **Consent (Flexpa Link)**: A secure, embeddable SDK for obtaining patient consent to access their health data
+- **Records (Flexpa API)**: A FHIR R4 compliant REST API for retrieving standardized health insurance claims and medical records
+
+The typical integration flow: Patient consents via Flexpa Link → Exchange public token for access token → Query FHIR API for health records.
+
+## Docs
+
+- [Quickstart](https://www.flexpa.com/docs/guides/quickstart): Complete guide to integrating Flexpa with a working example application
+- [Road to production](https://www.flexpa.com/docs/guides/getting-started): How to go from introduction to live mode — demo intake, sandbox access, MSA, and kickoff
+- [FHIR API Reference](https://www.flexpa.com/docs/records): Complete API documentation including authentication, endpoints, and response formats
+- [Consent SDK Reference](https://www.flexpa.com/docs/consent): Frontend consent component integration guide for web and mobile apps
+- [FHIR Introduction](https://www.flexpa.com/docs/fhir/introduction): Introduction to FHIR resources and healthcare data standards
+- [Test Mode](https://www.flexpa.com/docs/test-mode): Guide to testing integrations with sample data before going live
+
+## Guides
+
+- [Agent Guide](https://www.flexpa.com/docs/guides/agents): Building AI agents with Flexpa including MCP server integration
+- [Claims Data Guide](https://www.flexpa.com/docs/guides/claims): Understanding healthcare claims data and how to work with it
+- [Financial Data Guide](https://www.flexpa.com/docs/guides/financial): Interpreting cost information, insurance processing, and healthcare payments
+- [Usage Patterns](https://www.flexpa.com/docs/guides/usage): Common implementation patterns and best practices for Flexpa Link
+- [Parsing FHIR Data](https://www.flexpa.com/docs/guides/parsing-fhir): Best practices for parsing and extracting data from FHIR resources
+- [Patient Linking](https://www.flexpa.com/docs/guides/patient-linking): Connecting patient records across multiple payers
+- [Medplum Integration](https://www.flexpa.com/docs/guides/medplum): Integrating Flexpa with Medplum FHIR server
+- [AWS HealthLake](https://www.flexpa.com/docs/guides/healthlake): Integrating Flexpa with AWS HealthLake
+
+## Network & Data
+
+- [Network Reference](https://www.flexpa.com/docs/network): Overview of Flexpa's payer network and coverage
+- [Endpoint Directory](https://www.flexpa.com/docs/network/directory): Complete directory of supported health plan FHIR endpoints
+- [Directory MCP Server](https://www.flexpa.com/docs/network/directory-mcp): MCP server for querying the endpoint directory programmatically
+- [Data Sheet](https://www.flexpa.com/docs/records/data-sheet): Comprehensive overview of available FHIR resources and data elements
+- [Claims to Clinical](https://www.flexpa.com/docs/records/claims-to-clinical): Transform claims data into clinical FHIR resources
+- [Webhooks](https://www.flexpa.com/docs/records/webhooks): Real-time notifications when patient data is available
+
+## FHIR Resources
+
+- [Explanation of Benefit](https://www.flexpa.com/docs/fhir/explanation-of-benefit): Detailed EOB resource documentation including claims and payment information
+- [Coverage](https://www.flexpa.com/docs/fhir/coverage): Insurance coverage and plan details
+- [Patient](https://www.flexpa.com/docs/fhir/patient): Patient demographics and identifiers
+- [Condition](https://www.flexpa.com/docs/fhir/condition): Diagnoses and health conditions
+- [Medication](https://www.flexpa.com/docs/fhir/medication): Medication information from pharmacy claims
+- [MedicationRequest](https://www.flexpa.com/docs/fhir/medication-request): Prescribed medications
+- [Procedure](https://www.flexpa.com/docs/fhir/procedure): Medical procedures performed
+- [Observation](https://www.flexpa.com/docs/fhir/observation): Lab results and vital signs
+- [Encounter](https://www.flexpa.com/docs/fhir/encounter): Healthcare visits and admissions
+- [Practitioner](https://www.flexpa.com/docs/fhir/practitioner): Healthcare provider information
+- [Organization](https://www.flexpa.com/docs/fhir/organization): Healthcare organizations and facilities
+
+## Optional
+
+- [FAQ](https://www.flexpa.com/docs/faq): Common questions about Flexpa integration and capabilities
+- [What We Don't Do](https://www.flexpa.com/docs/what-we-dont-do): Important limitations and scope of Flexpa's services
+- [Node SDK](https://www.flexpa.com/docs/records/node-sdk): TypeScript/JavaScript SDK for simplified API integration
+- [SMART Health Links](https://www.flexpa.com/docs/smart-health-links): Shareable health data links specification
+- [Terminology Guide](https://www.flexpa.com/docs/fhir/code-systems): Healthcare terminology and code systems reference
+
+## Code Examples
+
+### Start OAuth Flow
+```typescript
+import FlexpaClient from '@flexpa/node-sdk';
+
+// Client-side (browser) example
+(async () => {
+  const codeVerifier = await FlexpaClient.generateCodeVerifier();
+  const codeChallenge = await FlexpaClient.generateCodeChallenge(codeVerifier);
+
+  const authUrl = FlexpaClient.buildAuthorizationUrl({
+    publishableKey: 'pk_test_...',
+    redirectUri: 'https://yourapp.com/callback',
+    codeChallenge,
+    externalId: 'user-123',
+  });
+
+  window.location.href = authUrl;
+})();
+```
+
+### Exchange Code for Token
+```typescript
+// Server-side example (e.g., in your callback handler)
+const client = await FlexpaClient.fromAuthorizationCode(
+  code,
+  codeVerifier,
+  redirectUri,
+  publishableKey
+);
+
+const accessToken = client.getAccessToken();
+```
+
+### Fetch Patient Data
+```typescript
+const client = FlexpaClient.fromBearerToken(accessToken);
+const everything = await client.$everything();
+const claims = await client.search('ExplanationOfBenefit');
+```
+
+### Extract Data with ViewDefinition
+```typescript
+const response = await fetch('https://api.flexpa.com/fhir/ViewDefinition/$run', {
+  method: 'POST',
+  headers: {
+    'Authorization': `Bearer ${accessToken}`,
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    resourceType: 'Parameters',
+    parameter: [{ name: 'viewResource', resource: viewDefinition }]
+  })
+});
+```

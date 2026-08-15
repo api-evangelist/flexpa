@@ -1,0 +1,204 @@
+generated: '2026-08-14'
+method: derived
+source: mcp/flexpa-mcp.yml + openapi/_original/flexpa-openapi.yml + https://www.flexpa.com/docs/records
+provider: Flexpa
+providerId: flexpa
+summary: >-
+  Binds Flexpa's two published MCP tool surfaces to the REST operations behind
+  them. The patient MCP server's live tools/list is OAuth-gated, so tools are
+  mapped by name and by the semantics Flexpa publishes in its Agent Guide - not
+  by an observed inputSchema - and confidence is set accordingly. The Endpoint
+  Directory MCP tools WERE observed live (anonymous tools/list, HTTP 200) and
+  their backing REST resource GET /endpoints was probed directly.
+surfaces:
+  openapi:
+    files:
+    - openapi/flexpa-fhir-api-openapi.yml
+    - openapi/flexpa-claims-data-api-openapi.yml
+    - openapi/flexpa-access-tokens-api-openapi.yml
+    - openapi/flexpa-link-api-openapi.yml
+    original: openapi/_original/flexpa-openapi.yml
+    operations: 15
+    gated: false
+  graphql:
+    endpoint: null
+    note: Flexpa publishes no GraphQL surface.
+  mcp:
+  - url: https://api.flexpa.com/mcp
+    gated: true
+    note: tools/list returns HTTP 401 invalid_token; schemas need an authenticated introspection.
+  - url: https://api.flexpa.com/mcp/directory
+    gated: false
+    note: tools/list returned HTTP 200 anonymously; schemas archived in mcp/flexpa-directory-tools.json.
+  rest_directory:
+    endpoint: https://api.flexpa.com/endpoints
+    gated: false
+    note: >-
+      Public cursor-paginated directory API, documented at
+      https://www.flexpa.com/docs/network and probed 200 anonymously. It is NOT
+      described by any captured OpenAPI file, so its operations have no
+      operationId to bind to.
+crosswalk:
+- tool: get_patient
+  category: patient
+  rest:
+  - readPatient
+  - searchPatient
+  binding: rest
+  confidence: high
+  note: FHIR Patient read/search on /fhir/Patient.
+- tool: get_coverage
+  category: coverage
+  rest:
+  - searchCoverage
+  - readCoverage
+  binding: rest
+  confidence: high
+- tool: get_claims
+  category: claims
+  rest:
+  - searchExplanationOfBenefit
+  - readExplanationOfBenefit
+  binding: rest
+  confidence: high
+  note: EOB search supports pagination and type filtering, matching the tool's documented parameters.
+- tool: get_health_summary
+  category: composite
+  rest:
+  - patientEverything
+  - patientSummary
+  binding: rest
+  confidence: medium
+  note: Server-side composite over the patient compartment; the docs describe one combined response, the REST equivalents are $everything / $summary.
+- tool: get_financial_summary
+  category: claims
+  rest:
+  - searchExplanationOfBenefit
+  binding: rest
+  confidence: medium
+  note: Cost aggregation is computed server-side from EOB resources; no dedicated REST aggregate operation is published.
+- tool: fhir_read
+  category: fhir
+  rest:
+  - readPatient
+  - readCoverage
+  - readExplanationOfBenefit
+  binding: rest
+  confidence: medium
+  note: Generic "read a FHIR resource by id"; the captured spec enumerates only the three read operations above.
+- tool: get_problems
+  category: clinical
+  rest: []
+  binding: rest-undocumented-in-spec
+  confidence: low
+  note: Backed by FHIR Condition search on api.flexpa.com/fhir; that resource type is documented (docs/fhir/condition) but absent from the captured OpenAPI, so there is no operationId to bind.
+- tool: get_allergies
+  category: clinical
+  rest: []
+  binding: rest-undocumented-in-spec
+  confidence: low
+  note: FHIR AllergyIntolerance search - documented resource, not in the captured OpenAPI.
+- tool: get_labs
+  category: clinical
+  rest: []
+  binding: rest-undocumented-in-spec
+  confidence: low
+  note: FHIR Observation (laboratory category) search - documented resource, not in the captured OpenAPI.
+- tool: get_vitalsigns
+  category: clinical
+  rest: []
+  binding: rest-undocumented-in-spec
+  confidence: low
+  note: FHIR Observation (vital-signs category) search.
+- tool: get_documents
+  category: clinical
+  rest: []
+  binding: rest-undocumented-in-spec
+  confidence: low
+  note: FHIR DocumentReference search.
+- tool: get_medications
+  category: clinical
+  rest: []
+  binding: rest-undocumented-in-spec
+  confidence: low
+  note: FHIR MedicationRequest / Medication search.
+- tool: get_immunizations
+  category: clinical
+  rest: []
+  binding: rest-undocumented-in-spec
+  confidence: low
+  note: FHIR Immunization search.
+- tool: get_procedures
+  category: clinical
+  rest: []
+  binding: rest-undocumented-in-spec
+  confidence: low
+  note: FHIR Procedure search.
+- tool: get_visits
+  category: clinical
+  rest: []
+  binding: rest-undocumented-in-spec
+  confidence: low
+  note: FHIR Encounter search.
+- tool: search_endpoints
+  category: directory
+  rest: []
+  binding: rest-undocumented-in-spec
+  confidence: medium
+  note: Backed by the public GET https://api.flexpa.com/endpoints directory API (probed 200); no OpenAPI describes it.
+- tool: list_endpoints
+  category: directory
+  rest: []
+  binding: rest-undocumented-in-spec
+  confidence: medium
+  note: GET /endpoints with limit/cursor/status filters.
+- tool: get_endpoint_details
+  category: directory
+  rest: []
+  binding: rest-undocumented-in-spec
+  confidence: medium
+  note: Per-endpoint detail; the list response already carries the endpoint object, the tool adds ONC CHPL certified-product linkage.
+mcp_only:
+- tool: get_care_team
+  reason: Deduplicates care team members across sources; no single REST operation returns the merged view.
+- tool: find_in_record
+  reason: Natural-language search across the whole record; server-side composite with no REST equivalent.
+- tool: get_document_content
+  reason: Extracts text from clinical documents; a transformation, not a published REST operation.
+- tool: check_lob_support
+  reason: Line-of-business validation and auth-flow selection is computed from directory fields; no REST operation returns it directly.
+rest_only:
+- capability: authorization
+  operations:
+  - authorize
+  - token
+  note: OAuth 2.0 PKCE and client_credentials flows - agent clients use the MCP OAuth handshake instead.
+- capability: capability-statement
+  operations:
+  - getCapabilityStatement
+- capability: structured-extraction
+  operations:
+  - runViewDefinition
+  note: SQL-on-FHIR ViewDefinition $run has no MCP tool.
+- capability: document-export
+  operations:
+  - patientPdf
+  note: PDF export of the full record has no MCP tool.
+- capability: provider-directory
+  operations:
+  - searchPractitioner
+  - searchOrganization
+  note: Practitioner/Organization FHIR search has no patient-MCP tool.
+coverage:
+  tools_named: 22
+  patient_mcp_tools: 18
+  directory_mcp_tools: 4
+  tools_bound_to_operation_ids: 6
+  tools_bound_to_undocumented_rest: 12
+  mcp_only: 4
+  rest_operations_total: 15
+  rest_operations_with_a_tool: 8
+  rest_only_operations: 7
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

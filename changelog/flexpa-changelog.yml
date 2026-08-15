@@ -1,0 +1,76 @@
+generated: '2026-08-14'
+method: searched
+source: https://www.flexpa.com/docs/changelog
+provider: Flexpa
+providerId: flexpa
+scheme: dated-entries
+current_version: null
+url: https://www.flexpa.com/docs/changelog
+summary: >-
+  Flexpa publishes a dated changelog inside its documentation and labels entries
+  as Breaking Change, Addition or Update. Cadence is high - twelve entries in the
+  six weeks before this pass - and the MCP surface is the fastest-moving part of
+  the platform (12 clinical tools added in a single 2026-07-23 entry).
+window:
+  from: '2026-07-01'
+  to: '2026-08-14'
+  entries_captured: 12
+entries:
+- date: '2026-08-14'
+  kind: breaking
+  title: FooMedical removed from live mode
+  highlights: >-
+    The FooMedical endpoint was removed from the network directory in live mode;
+    existing connections must re-consent to a different provider. FooMedical
+    remains available in test mode.
+- date: '2026-07-29'
+  kind: addition
+  title: Sync frequency control
+  highlights: Per-application choice of Daily, Weekly or Monthly data sync intervals in Application settings.
+- date: '2026-07-23'
+  kind: addition
+  title: MCP server expanded with 12 clinical tools
+  highlights: >-
+    Problems, allergies, labs, vital signs, documents and more, bringing the
+    published MCP tool count to 17.
+- date: '2026-07-22'
+  kind: addition
+  title: Patient portal login support
+  highlights: Health insurers that authenticate through a patient portal rather than a Patient Access API are now connectable.
+- date: '2026-07-21'
+  kind: addition
+  title: Directory uptime charts show browser render results
+  highlights: Network directory uptime now displays browser render checks alongside HTTP reachability.
+- date: '2026-07-15'
+  kind: update
+  title: Patient guide refreshed
+  highlights: Unified identity verification and search flow documentation, new screenshots and error guidance.
+- date: '2026-07-10'
+  kind: addition
+  title: Line of business selection in Flexpa Consent
+  highlights: Payer plan-type differentiation across Employer, Medicare, Marketplace and Medicaid.
+- date: '2026-07-10'
+  kind: breaking
+  title: flexpa_ial2_mode cannot be combined with flexpa_endpoint_id
+  highlights: Authorization URLs setting both parameters now fail validation.
+- date: '2026-07-09'
+  kind: update
+  title: Patient record PDF export improvements
+  highlights: WCAG AA colour accessibility, horizontal pivot tables for vitals and labs, condition deduplication.
+- date: '2026-07-08'
+  kind: addition
+  title: InsurancePlan resource generation
+  highlights: Medicare Advantage Part C coverage with benefits, costs and plan metadata as FHIR InsurancePlan.
+- date: '2026-07-07'
+  kind: addition
+  title: IAL2 Verifications view in Flexpa Portal
+  highlights: All-time totals and verification history for TEFCA identity verifications.
+- date: '2026-07-01'
+  kind: breaking
+  title: Cursor pagination on GET /endpoints
+  highlights: >-
+    Directory responses restructured with meta.hasMore / meta.nextCursor;
+    requests without pagination parameters return the first page only.
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

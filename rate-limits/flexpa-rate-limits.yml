@@ -1,11 +1,15 @@
 specification: API Commons Rate Limits
 specificationVersion: '0.1'
 schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/RateLimits
+generated: '2026-08-14'
+method: searched
+source: https://www.flexpa.com/docs/records
 provider: Flexpa
 providerId: flexpa
 created: '2026-06-21'
-modified: '2026-06-21'
-reconciled: false
+modified: '2026-08-14'
+reconciled: true
+limit_count: 6
 tags:
 - Healthcare
 - FHIR
@@ -16,50 +20,88 @@ tags:
 - Quotas
 - Throttling
 description: >-
-  Flexpa governs usage primarily through annual platform license caps -
-  eligible users, IAL2 identity verifications, and included data retrievals -
-  with per-active-user overage billing rather than published per-second request
-  limits. The FHIR API additionally returns HTTP 429 while a freshly connected
-  patient's data is still synchronizing from the payer (typically under one
-  minute) and HTTP 422 if that synchronization fails. Specific per-second or
-  per-minute request ceilings are not publicly documented and are not reconciled
-  in this artifact.
+  Flexpa now publishes an explicit runtime rate-limit signal on the FHIR API -
+  Retry-After plus X-RateLimit-Limit / X-RateLimit-Remaining / X-RateLimit-Reset,
+  with a 429 carrying an OperationOutcome whose issue.code is "throttled". The
+  numeric ceiling behind those headers is not published; commercially, usage is
+  bounded by the annual license caps (eligible users, IAL2 verifications, data
+  retrievals) with per-end-user overage. The public Endpoint Directory MCP server
+  is the one surface with a stated number: 60 requests per minute.
 notes: >-
-  The 429 response on FHIR reads/searches signals an in-progress payer sync, not
-  a hard throughput throttle; clients should retry after a short delay. Confirm
-  any per-account request ceilings with Flexpa during reconciliation.
+  The most important operational fact here is that HTTP 429 is overloaded. An
+  OperationOutcome with issue.code "transient" means the patient's payer sync is
+  still running (typically under a minute; docs show X-Retry-After: 3) and the
+  client should retry almost immediately. issue.code "throttled" is the real
+  quota error. Treating them identically makes an integration look slow at exactly
+  the moment a patient is watching.
 sources:
 - https://www.flexpa.com/docs/records
-- https://www.flexpa.com/docs/fhir/explanation-of-benefit
+- https://www.flexpa.com/docs/network/directory-mcp
 - https://www.flexpa.com/pricing
 responseCodes:
   throttled: 429
+  syncing: 429
+  syncFailed: 422
+headers:
+- name: Retry-After
+  meaning: Seconds to wait before retrying.
+- name: X-RateLimit-Limit
+  meaning: Total quota units available.
+- name: X-RateLimit-Remaining
+  meaning: Quota units remaining.
+- name: X-RateLimit-Reset
+  meaning: Seconds until the quota window resets.
+- name: X-Retry-After
+  meaning: Retry hint returned during an in-progress patient sync (docs show a value of 3).
+- name: X-Request-Id
+  meaning: Per-request trace id to quote to support.
 limits:
-- name: Eligible Users
+- name: FHIR API request quota
+  scope: token
+  metric: requests
+  limit: not published (signalled at runtime by X-RateLimit-* headers)
+  window: not published
+  notes: Exhaustion returns 429 with OperationOutcome issue.code "throttled" and a Retry-After header.
+- name: Endpoint Directory MCP server
+  scope: ip
+  metric: requests
+  limit: 60
+  window: minute
+  notes: Public, unauthenticated server at https://api.flexpa.com/mcp/directory; exceeding returns HTTP 429.
+- name: Initial patient sync
+  scope: token
+  metric: requests
+  limit: retry until sync completes
+  notes: FHIR reads/searches return 429 with issue.code "transient" while payer data syncs, typically under one minute.
+- name: Eligible users
   scope: account
   metric: users
   limit: per license tier (5,000 - unlimited)
-  notes: Capped by platform license tier; overage billed per active user.
-- name: IAL2 Verifications
+  notes: Capped by annual platform license tier; overage billed $1-$5 per end user depending on tier.
+- name: IAL2 verifications
   scope: account
   metric: verifications
-  limit: per license tier (1,000 - 100,000)
+  limit: per license tier (1,000 - 625,000)
   notes: Included identity-verification volume per annual license.
-- name: Data Retrievals
+- name: Data retrievals
   scope: account
   metric: retrievals
-  limit: per license tier (10,000 - unlimited)
+  limit: per license tier (36,500 - 22,812,500)
   notes: Included FHIR data retrievals per annual license.
-- name: Initial Patient Sync
-  scope: token
-  metric: requests
-  limit: retry after sync completes
-  notes: FHIR reads/searches return 429 while payer data syncs (typically under one minute).
+pagination_defaults:
+  _count_default: 20
+  _count_max: 1000
+  directory_limit_default: 100
+  directory_limit_max: 1000
 policies:
-- name: Sync Backoff
-  description: On a 429 during initial sync, wait briefly and retry; sync usually completes in under a minute.
-- name: License Caps
-  description: Usage is bounded by annual platform license caps with per-active-user overage billing.
+- name: Distinguish transient from throttled
+  description: >-
+    Branch on OperationOutcome issue.code before backing off - "transient" means
+    retry in ~3 seconds, "throttled" means honour Retry-After / X-RateLimit-Reset.
+- name: Prefer the sync_completed webhook
+  description: Subscribe to sync_completed instead of polling the FHIR API through the sync window.
+- name: License caps
+  description: Usage is bounded by annual platform license caps with per-end-user overage billing.
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com

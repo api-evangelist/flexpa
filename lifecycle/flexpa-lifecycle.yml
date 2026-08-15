@@ -1,0 +1,85 @@
+generated: '2026-08-14'
+method: searched
+source: https://www.flexpa.com/docs/changelog + https://flexpastatus.com + https://www.flexpa.com/docs/guides/getting-started
+provider: Flexpa
+providerId: flexpa
+summary: >-
+  Flexpa runs an unversioned production API and communicates change through a
+  dated changelog that explicitly labels breaking changes. A real status page
+  exists on a separate domain (flexpastatus.com) covering five components. What
+  is NOT published is a deprecation policy, a sunset window, or an SLA - breaking
+  changes appear in the changelog on the day they land, with no notice period
+  stated anywhere in the docs.
+versioning:
+  scheme: none-published
+  current: null
+  data_standard: FHIR R4
+  docs: https://www.flexpa.com/docs/records
+  note: >-
+    No version path segment, header or date-pinning mechanism is documented. The
+    MCP server negotiates the MCP protocol version (observed 2025-06-18) but that
+    versions the protocol, not Flexpa's API.
+deprecation:
+  policy_url: null
+  policy_published: false
+  sunset_header: false
+  deprecation_header: false
+  note: >-
+    No RFC 8594 Sunset/Deprecation header support and no notice-period commitment
+    is documented. Breaking changes ARE labelled as such in the changelog - for
+    example "FooMedical is no longer available in live mode" (2026-08-14), the
+    flexpa_ial2_mode / flexpa_endpoint_id incompatibility (2026-07-10) and the
+    move to cursor pagination on GET /endpoints (2026-07-01) - but each is
+    announced at the point of change.
+  recent_breaking_changes:
+  - date: '2026-08-14'
+    change: FooMedical removed from live mode; existing connections must re-consent to a different provider.
+  - date: '2026-07-10'
+    change: flexpa_ial2_mode can no longer be combined with flexpa_endpoint_id on authorization URLs.
+  - date: '2026-07-01'
+    change: Cursor pagination on GET /endpoints; unpaginated requests now return the first page only.
+status_page:
+  url: https://flexpastatus.com
+  components:
+  - api.flexpa.com
+  - link.flexpa.com
+  - my.flexpa.com
+  - flexpa.com/docs
+  - portal.flexpa.com
+  uptime_window: 90 days
+  reported_uptime: 100.0% per component at time of probe
+  subscriptions:
+  - email
+  - slack
+  - microsoft-teams
+  - google-chat
+  - webhook
+  - rss
+  - atom
+  - api
+  probed: '2026-08-14'
+  http_status: 200
+sla:
+  url: null
+  uptime_target: null
+  note: >-
+    No public SLA. Commercial terms are handled through the MSA in the road-to-
+    production flow; uptime commitments are not published.
+support:
+  email: support@flexpa.com
+  channel: Dedicated shared Slack channel provisioned at sandbox access and kept through launch.
+  docs: https://www.flexpa.com/docs/support
+onboarding_gate:
+  steps:
+  - Demo intake at https://www.flexpa.com/demo
+  - Sandbox / test-mode provisioning plus Slack channel
+  - Master Service Agreement
+  - Kickoff call and recurring check-ins
+  note: >-
+    Live mode requires a signed MSA AND a publicly accessible privacy policy and
+    terms of service on the customer's side; there is no free live tier.
+deprecated_operations: []
+feature_requests: https://github.com/flexpa/product-requests
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

@@ -1,0 +1,130 @@
+generated: '2026-08-14'
+method: searched
+source: https://www.flexpa.com/docs/records
+provider: Flexpa
+providerId: flexpa
+summary: >-
+  Flexpa is a FHIR R4 API, so most cross-cutting semantics are FHIR's rather than
+  Flexpa's own: search parameters, Bundle/link pagination and OperationOutcome
+  errors. Flexpa layers on OAuth 2.0 PKCE patient authorization, an X-Request-Id
+  trace header, X-RateLimit-* signalling and a 429 "still syncing" state that is
+  a lifecycle signal rather than a throttle. Flexpa documents no idempotency-key
+  mechanism for writes and no dated API version - both are honest gaps.
+authentication:
+  style: bearer-token
+  header: 'Authorization: Bearer {access_token}'
+  token_types:
+  - Patient Access Token (authorization_code + PKCE, via Flexpa Consent)
+  - Application Access Token (client_credentials, Basic auth with publishable:secret key)
+  key_prefixes:
+  - pk_test_
+  - pk_live_
+  - sk_test_
+  - sk_live_
+  discovery:
+  - https://api.flexpa.com/.well-known/openid-configuration
+  - https://api.flexpa.com/.well-known/oauth-authorization-server
+  - https://api.flexpa.com/.well-known/smart-configuration
+  see: authentication/flexpa-authentication.yml
+idempotency:
+  supported: false
+  request_key_header: null
+  note: >-
+    Flexpa publishes no idempotency-key header or retry-safety contract for API
+    requests. The FHIR surface is read-dominant (GET search/read), and the one
+    documented POST (ViewDefinition $run) is an extraction, not a mutation. The
+    only idempotency guidance Flexpa publishes is consumer-side: webhook payloads
+    carry an event_id (UUID v4) "for idempotency tracking" so receivers can
+    de-duplicate redelivered events.
+  webhook_event_id: event_id
+pagination:
+  style: fhir-bundle-link
+  params:
+  - name: _count
+    meaning: page size
+    default: 20
+    max: 1000
+  - name: _offset
+    meaning: page offset
+  response_fields:
+  - Bundle.link[rel=self]
+  - Bundle.link[rel=first]
+  - Bundle.link[rel=next]
+  - Bundle.link[rel=previous]
+  - Bundle.total
+  directory_api:
+    style: cursor
+    params:
+    - limit (default 100, max 1000)
+    - cursor (opaque, from meta.nextCursor)
+    response_fields:
+    - meta.hasMore
+    - meta.nextCursor
+    note: >-
+      The public directory API at GET https://api.flexpa.com/endpoints moved to
+      cursor pagination on 2026-07-01 as a documented breaking change.
+filtering_and_expansion:
+  style: fhir-search-parameters
+  examples:
+  - patient
+  - created
+  - provider
+  - coverage
+  - status
+  - identifier
+  special_operations:
+  - $everything
+  - $summary
+  - $pdf
+  - ViewDefinition/$run
+  note: >-
+    Field selection is FHIR-native (search parameters + operations); there is no
+    Stripe-style expand or sparse-fieldset parameter.
+tracing:
+  request_id_header: X-Request-Id
+  direction: response
+  note: Returned on every request and quoted when contacting support.
+versioning:
+  scheme: none-published
+  current: null
+  data_standard: FHIR R4 (US Core / CARIN Blue Button aligned resources)
+  note: >-
+    No version path segment or version header is documented; api.flexpa.com is
+    unversioned and change is communicated through the dated changelog. See
+    changelog/flexpa-changelog.yml and lifecycle/flexpa-lifecycle.yml.
+error_envelope:
+  format: fhir-operation-outcome
+  media_type: application/fhir+json
+  fields:
+  - issue.code
+  - issue.severity
+  - issue.diagnostics
+  rfc9457: false
+  see: errors/flexpa-problem-types.yml
+rate_limit_signaling:
+  status: 429
+  headers:
+  - Retry-After
+  - X-RateLimit-Limit
+  - X-RateLimit-Remaining
+  - X-RateLimit-Reset
+  outcome_code: throttled
+  see: rate-limits/flexpa-rate-limits.yml
+  note: >-
+    A 429 with issue.code "transient" means the patient's payer sync is still
+    running (typically under a minute), not that a quota was exceeded - agents
+    must distinguish the two before backing off aggressively.
+webhooks:
+  signature_header: X-Flexpa-Signature
+  signature_format: t={timestamp},v1={signature}
+  algorithm: HMAC-SHA256 over "{timestamp}.{raw_body}"
+  tolerance: 5 minutes
+  see: asyncapi/flexpa-webhooks.yml
+media_types:
+- application/fhir+json
+- application/json
+- application/pdf
+- application/x-www-form-urlencoded
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

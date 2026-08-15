@@ -1,0 +1,68 @@
+generated: '2026-08-14'
+method: searched
+source: https://www.flexpa.com/docs/records/webhooks
+provider: Flexpa
+providerId: flexpa
+summary: >-
+  Flexpa publishes a small, well-specified webhook surface - four events, a
+  versioned envelope, HMAC-SHA256 signatures with a replay window, and a stated
+  retry schedule. It does NOT publish an AsyncAPI document, so no AsyncAPI spec is
+  claimed here; this artifact is the webhook catalog as documented.
+asyncapi_published: false
+asyncapi_probe:
+- url: https://www.flexpa.com/asyncapi.yaml
+  note: not published; no AsyncAPI document was found on any Flexpa host or in the GitHub org.
+transport: https-webhook
+configuration:
+  where: Flexpa Portal (https://portal.flexpa.com)
+  mode_specific: true
+  note: Endpoints and their secrets are added, updated and removed in Portal, separately for test and live mode.
+envelope:
+  fields:
+  - name: event_id
+    type: string (UUID v4)
+    description: Stable identifier for idempotent processing of redelivered events.
+  - name: event
+    type: string
+    description: The event type name.
+  - name: version
+    type: integer
+    description: Envelope version, currently 1.
+  - name: timestamp
+    type: integer
+    description: Unix milliseconds.
+  - name: data
+    type: object
+    description: Event-specific payload, including mode ("test" or "live") and optional external_id.
+security:
+  header: X-Flexpa-Signature
+  format: t={timestamp},v1={signature}
+  algorithm: HMAC-SHA256
+  signed_payload: '{timestamp}.{raw_request_body}'
+  comparison: constant-time
+  replay_tolerance: 5 minutes
+  other_headers:
+  - 'Content-Type: application/json'
+  - 'User-Agent: Flexpa-Webhook/1.0'
+delivery:
+  attempts: 5
+  backoff: exponential - initial attempt then retries at 2, 4, 8 and 16 minutes
+  retry_triggers:
+  - non-2xx response
+  - 30 second timeout
+events:
+- name: sync_completed
+  description: Patient data synchronization is complete and ready to query via the FHIR API.
+  consumer_action: Begin reading the patient compartment; before this event FHIR reads may return 429 with issue.code transient.
+- name: sync_failed
+  description: Patient data synchronization failed.
+  consumer_action: Surface a retry or re-consent path; correlates with the 422 SyncFailed response on the FHIR API.
+- name: refresh_expired
+  description: Flexpa can no longer refresh a patient authorization; the user must re-consent.
+  consumer_action: Re-run Flexpa Consent for that patient.
+- name: endpoint_status_changed
+  description: A Flexpa-registered endpoint's connectivity status changed.
+  consumer_action: Update cached directory state; statuses are CONNECTED, IN_PROGRESS, BROKEN, UNKNOWN, UNAVAILABLE.
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

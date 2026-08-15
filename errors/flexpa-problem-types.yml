@@ -1,0 +1,83 @@
+generated: '2026-08-14'
+method: searched
+source: https://www.flexpa.com/docs/records
+derived_from: openapi/_original/flexpa-openapi.yml
+provider: Flexpa
+providerId: flexpa
+format: fhir-operation-outcome
+media_type: application/fhir+json
+rfc9457: false
+summary: >-
+  Flexpa returns FHIR R4 OperationOutcome resources rather than RFC 9457
+  problem+json. The discriminator is issue.code, and two distinct conditions share
+  HTTP 429 - "transient" (the payer sync for a freshly connected patient is still
+  running) and "throttled" (a real rate limit). An agent that treats both as a
+  quota error will back off when it should simply retry in a few seconds.
+envelope:
+  resourceType: OperationOutcome
+  fields:
+  - issue.severity
+  - issue.code
+  - issue.diagnostics
+  request_trace_header: X-Request-Id
+problems:
+- status: 403
+  code: forbidden
+  title: Insufficient permissions
+  remediation: >-
+    The access token does not carry the scope or patient context required. Re-run
+    the Flexpa Consent authorization with launch/patient.
+- status: 404
+  code: not-supported
+  title: Unsupported operation or resource
+  remediation: The requested FHIR operation or resource type is not supported for this endpoint.
+- status: 422
+  code: processing
+  title: Client-side processing error
+  remediation: >-
+    Malformed request or an unsatisfiable search. Also returned by the FHIR API
+    when synchronization with the payer failed outright.
+  source_operations:
+  - openapi/flexpa-fhir-api-openapi.yml#searchPatient
+  - openapi/flexpa-claims-data-api-openapi.yml#searchExplanationOfBenefit
+- status: 429
+  code: transient
+  title: Initial patient sync in progress
+  remediation: >-
+    Not a quota error. The patient's data is still being retrieved from the payer
+    (typically under a minute). Retry after the interval in X-Retry-After (docs
+    show a value of 3 seconds).
+  headers:
+  - X-Retry-After
+  source_operations:
+  - openapi/flexpa-fhir-api-openapi.yml#searchPatient
+  - openapi/flexpa-fhir-api-openapi.yml#searchCoverage
+  - openapi/flexpa-claims-data-api-openapi.yml#searchExplanationOfBenefit
+- status: 429
+  code: throttled
+  title: Rate limited
+  remediation: >-
+    Quota exhausted. Honour Retry-After and read X-RateLimit-Limit /
+    X-RateLimit-Remaining / X-RateLimit-Reset before retrying.
+  headers:
+  - Retry-After
+  - X-RateLimit-Limit
+  - X-RateLimit-Remaining
+  - X-RateLimit-Reset
+- status: 500
+  code: exception
+  title: Server error
+  remediation: Retry with backoff; quote the X-Request-Id when contacting support.
+oauth_errors:
+- error: invalid_token
+  status: 401
+  surface: https://api.flexpa.com/mcp
+  description: Authorization required to access the MCP server.
+  challenge: 'WWW-Authenticate: Bearer resource_metadata="https://api.flexpa.com/.well-known/oauth-protected-resource/mcp"'
+  observed: '2026-08-14'
+gaps:
+- No numbered/registered error-code registry is published - issue.code values are the FHIR ValueSet, not Flexpa identifiers.
+- No error type URIs, so errors are not dereferenceable in the RFC 9457 sense.
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

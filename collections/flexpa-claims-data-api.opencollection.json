@@ -1,0 +1,153 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Flexpa Access Tokens Claims Data API",
+    "version": "1.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Claims Data",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Return all resources in the patient compartment.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.flexpa.com/fhir/Patient/:id/$everything",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Return all resources in the patient compartment."
+        },
+        {
+          "info": {
+            "name": "Generate an International Patient Summary (IPS) document.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.flexpa.com/fhir/Patient/:id/$summary",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Generate an International Patient Summary (IPS) document."
+        },
+        {
+          "info": {
+            "name": "Export comprehensive patient health data as a PDF.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.flexpa.com/fhir/Patient/:id/$pdf",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Export comprehensive patient health data as a PDF."
+        },
+        {
+          "info": {
+            "name": "Search ExplanationOfBenefit (claims) resources.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.flexpa.com/fhir/ExplanationOfBenefit",
+            "params": [
+              {
+                "name": "patient",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "created",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "provider",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "coverage",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "status",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "identifier",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns health-insurance claims as FHIR ExplanationOfBenefit resources. Supports FHIR R4 search parameters including patient, created, provider, coverage, status, and identifier."
+        },
+        {
+          "info": {
+            "name": "Read a single ExplanationOfBenefit resource.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.flexpa.com/fhir/ExplanationOfBenefit/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Read a single ExplanationOfBenefit resource."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

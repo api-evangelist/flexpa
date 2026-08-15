@@ -1,0 +1,67 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Flexpa Access Tokens Link API",
+    "version": "1.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Link",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Start the Flexpa Link OAuth 2.0 PKCE authorization flow.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.flexpa.com/oauth/authorize",
+            "params": [
+              {
+                "name": "response_type",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "client_id",
+                "value": "",
+                "type": "query",
+                "description": "Your publishable key."
+              },
+              {
+                "name": "redirect_uri",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "scope",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "state",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "code_challenge",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "code_challenge_method",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Redirects the patient into the Flexpa Link experience to select their health plan and authorize access. On success Flexpa redirects back to the application's redirect_uri with an authorization code."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}
