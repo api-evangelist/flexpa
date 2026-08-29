@@ -11,16 +11,30 @@ capability_model:
   attribution: Turbo EA Capabilities by Vincent Verdet — Turbo EA, https://github.com/vincentmakes/turbo-ea-capabilities,
     CC BY 4.0
   notice: NOTICE
-edge_count: 1
+edge_count: 2
 edges:
 - tag: FHIR
   spec_file: flexpa-fhir-api-openapi.yml
   capability_id: BC-2900.60
   capability_id_l1: BC-2900
   capability_name: Healthcare Interoperability Operations
-  confidence: 0.7
-  evidence: GET /fhir/metadata getCapabilityStatement FHIR capability statement.; POST /fhir/ViewDefinition/$run
-    Extract structured (tabular) data using a SQL-on-FHIR ViewDefinition.
-  reason: Operation of FHIR endpoints (capability statement, Patient/Coverage/Practitioner/Organization
-    search, SQL-on-FHIR extraction) is squarely healthcare interoperability operations. Some of the surface
-    is also coverage lookup, hence 0.7 rather than higher.
+  confidence: 0.75
+  evidence: GET /fhir/metadata 'FHIR capability statement.'; GET /fhir/Coverage 'Search Coverage resources.';
+    POST /fhir/ViewDefinition/$run 'Extract structured (tabular) data using a SQL-on-FHIR ViewDefinition.'
+  reason: Operation of a FHIR R4 endpoint with capability statement, resource search/read and SQL-on-FHIR
+    extraction is squarely healthcare interoperability operations (FHIR endpoints, data sharing). Coverage
+    search alone could hint at eligibility verification, but the surface is a general FHIR read API, so
+    the interoperability sub-capability is the honest fit.
+- tag: Claims Data
+  spec_file: flexpa-claims-data-api-openapi.yml
+  capability_id: BC-2900.60
+  capability_id_l1: BC-2900
+  capability_name: Healthcare Interoperability Operations
+  confidence: 0.72
+  evidence: GET /fhir/ExplanationOfBenefit 'Search ExplanationOfBenefit (claims) resources.'; GET /fhir/Patient/{id}/$everything
+    'Return all resources in the patient compartment.'; 'Patients authorize access through Flexpa Link
+    using OAuth 2.0 with PKCE'
+  reason: Patient-authorised retrieval of claims and clinical data as FHIR R4 resources is health information
+    exchange / patient-initiated data sharing via FHIR endpoints, which BC-2900.60 names explicitly. It
+    is a read/exchange surface, not claim production or denials work, so revenue-cycle capabilities do
+    not fit.
