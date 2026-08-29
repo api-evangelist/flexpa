@@ -6,6 +6,18 @@ description: Flexpa is a patient-access platform that lets applications connect 
   insurance plan and retrieve claims and clinical data as normalized FHIR R4 resources. Patients authorize
   access through Flexpa Link / OAuth 2.0 PKCE, and applications read ExplanationOfBenefit, Coverage, Patient,
   and other resources from a single FHIR API at https://api.flexpa.com.
+deliveryModel:
+  model: saas
+  open_source: false
+  commercial: true
+  callable_host: true
+  label: Hosted service · you call their endpoint
+  confidence: high
+  source:
+  - openapi
+  - pricing
+  generated: '2026-08-28'
+  method: derived
 accessModel:
   pricing: paid
   onboarding: self-serve
