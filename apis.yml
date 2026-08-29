@@ -139,6 +139,9 @@ apis:
   - type: Overlay
     url: overlays/flexpa-link-api-overlay.yaml
 common:
+- type: CapabilityMap
+  url: capabilities/flexpa-capability-edges.yml
+  name: Flexpa Business Capability Map
 - type: AgenticAccess
   url: agentic-access/flexpa-agentic-access.yml
 - type: DomainSecurity
