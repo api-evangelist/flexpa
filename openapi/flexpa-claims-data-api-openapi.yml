@@ -1,6 +1,6 @@
-openapi: 3.0.1
+openapi: 3.2.0
 info:
-  title: Flexpa Access Tokens Claims Data API
+  title: Flexpa Claims Data API
   description: Flexpa lets applications connect a patient to their health insurance plan and retrieve claims and clinical data as normalized FHIR R4 resources. Patients authorize access through Flexpa Link using OAuth 2.0 with PKCE, producing a Patient Access Token. Server-to-server Application Access Tokens are minted with the client_credentials grant using publishable and secret keys. The FHIR API is served under https://api.flexpa.com/fhir.
   termsOfService: https://www.flexpa.com/legal/terms
   contact:
@@ -17,7 +17,7 @@ paths:
       operationId: patientEverything
       tags:
       - Claims Data
-      summary: Return all resources in the patient compartment.
+      summary: Return all resources in the patient compartment
       security:
       - bearerAuth: []
       parameters:
@@ -34,7 +34,7 @@ paths:
       operationId: patientSummary
       tags:
       - Claims Data
-      summary: Generate an International Patient Summary (IPS) document.
+      summary: Generate an International Patient Summary (IPS) document
       security:
       - bearerAuth: []
       parameters:
@@ -47,7 +47,7 @@ paths:
       operationId: patientPdf
       tags:
       - Claims Data
-      summary: Export comprehensive patient health data as a PDF.
+      summary: Export comprehensive patient health data as a PDF
       security:
       - bearerAuth: []
       parameters:
@@ -65,7 +65,7 @@ paths:
       operationId: searchExplanationOfBenefit
       tags:
       - Claims Data
-      summary: Search ExplanationOfBenefit (claims) resources.
+      summary: Search ExplanationOfBenefit (claims) resources
       description: Returns health-insurance claims as FHIR ExplanationOfBenefit resources. Supports FHIR R4 search parameters including patient, created, provider, coverage, status, and identifier.
       security:
       - bearerAuth: []
@@ -101,7 +101,7 @@ paths:
       operationId: readExplanationOfBenefit
       tags:
       - Claims Data
-      summary: Read a single ExplanationOfBenefit resource.
+      summary: Read a single ExplanationOfBenefit resource
       security:
       - bearerAuth: []
       parameters:
@@ -111,8 +111,13 @@ paths:
           description: A FHIR ExplanationOfBenefit resource.
 components:
   parameters:
-    status:
-      name: status
+    identifier:
+      name: identifier
+      in: query
+      schema:
+        type: string
+    patient:
+      name: patient
       in: query
       schema:
         type: string
@@ -122,13 +127,8 @@ components:
       required: true
       schema:
         type: string
-    identifier:
-      name: identifier
-      in: query
-      schema:
-        type: string
-    patient:
-      name: patient
+    status:
+      name: status
       in: query
       schema:
         type: string

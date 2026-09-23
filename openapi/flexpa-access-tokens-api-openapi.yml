@@ -1,4 +1,4 @@
-openapi: 3.0.1
+openapi: 3.2.0
 info:
   title: Flexpa Access Tokens API
   description: Flexpa lets applications connect a patient to their health insurance plan and retrieve claims and clinical data as normalized FHIR R4 resources. Patients authorize access through Flexpa Link using OAuth 2.0 with PKCE, producing a Patient Access Token. Server-to-server Application Access Tokens are minted with the client_credentials grant using publishable and secret keys. The FHIR API is served under https://api.flexpa.com/fhir.
@@ -17,7 +17,7 @@ paths:
       operationId: token
       tags:
       - Access Tokens
-      summary: Exchange a code, refresh a token, or mint an Application Access Token.
+      summary: Exchange a code, refresh a token, or mint an Application Access Token
       description: The token endpoint supports the authorization_code grant (with PKCE code_verifier) to obtain a Patient Access Token, the refresh_token grant to renew it, and the client_credentials grant (Basic auth with publishable_key:secret_key) to mint a server-to-server Application Access Token. Application Access Tokens are JWTs signed with ES256 and live for 30 minutes.
       requestBody:
         required: true
@@ -34,22 +34,6 @@ paths:
                 $ref: '#/components/schemas/TokenResponse'
 components:
   schemas:
-    TokenResponse:
-      type: object
-      properties:
-        access_token:
-          type: string
-        token_type:
-          type: string
-          example: Bearer
-        expires_in:
-          type: integer
-          description: Token lifetime in seconds.
-        refresh_token:
-          type: string
-          description: Present when the offline_access scope was granted.
-        scope:
-          type: string
     TokenRequest:
       type: object
       required:
@@ -76,6 +60,22 @@ components:
         refresh_token:
           type: string
           description: The refresh token (refresh_token grant).
+    TokenResponse:
+      type: object
+      properties:
+        access_token:
+          type: string
+        token_type:
+          type: string
+          example: Bearer
+        expires_in:
+          type: integer
+          description: Token lifetime in seconds.
+        refresh_token:
+          type: string
+          description: Present when the offline_access scope was granted.
+        scope:
+          type: string
   securitySchemes:
     bearerAuth:
       type: http

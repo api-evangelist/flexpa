@@ -1,6 +1,6 @@
-openapi: 3.0.1
+openapi: 3.2.0
 info:
-  title: Flexpa Access Tokens FHIR API
+  title: Flexpa FHIR API
   description: Flexpa lets applications connect a patient to their health insurance plan and retrieve claims and clinical data as normalized FHIR R4 resources. Patients authorize access through Flexpa Link using OAuth 2.0 with PKCE, producing a Patient Access Token. Server-to-server Application Access Tokens are minted with the client_credentials grant using publishable and secret keys. The FHIR API is served under https://api.flexpa.com/fhir.
   termsOfService: https://www.flexpa.com/legal/terms
   contact:
@@ -17,7 +17,7 @@ paths:
       operationId: getCapabilityStatement
       tags:
       - FHIR
-      summary: FHIR capability statement.
+      summary: FHIR capability statement
       description: Returns the FHIR CapabilityStatement describing supported resources and operations.
       responses:
         '200':
@@ -27,7 +27,7 @@ paths:
       operationId: searchPatient
       tags:
       - FHIR
-      summary: Search Patient resources.
+      summary: Search Patient resources
       security:
       - bearerAuth: []
       parameters:
@@ -48,7 +48,7 @@ paths:
       operationId: readPatient
       tags:
       - FHIR
-      summary: Read a single Patient resource.
+      summary: Read a single Patient resource
       security:
       - bearerAuth: []
       parameters:
@@ -61,7 +61,7 @@ paths:
       operationId: searchCoverage
       tags:
       - FHIR
-      summary: Search Coverage resources.
+      summary: Search Coverage resources
       security:
       - bearerAuth: []
       parameters:
@@ -81,7 +81,7 @@ paths:
       operationId: readCoverage
       tags:
       - FHIR
-      summary: Read a single Coverage resource.
+      summary: Read a single Coverage resource
       security:
       - bearerAuth: []
       parameters:
@@ -94,7 +94,7 @@ paths:
       operationId: searchPractitioner
       tags:
       - FHIR
-      summary: Search individual providers by NPI, name, or specialty.
+      summary: Search individual providers by NPI, name, or specialty
       security:
       - bearerAuth: []
       responses:
@@ -109,7 +109,7 @@ paths:
       operationId: searchOrganization
       tags:
       - FHIR
-      summary: Search healthcare organizations by NPI, name, or location.
+      summary: Search healthcare organizations by NPI, name, or location
       security:
       - bearerAuth: []
       responses:
@@ -124,7 +124,7 @@ paths:
       operationId: runViewDefinition
       tags:
       - FHIR
-      summary: Extract structured (tabular) data using a SQL-on-FHIR ViewDefinition.
+      summary: Extract structured (tabular) data using a SQL-on-FHIR ViewDefinition
       security:
       - bearerAuth: []
       requestBody:
@@ -138,8 +138,13 @@ paths:
           description: Structured extraction output.
 components:
   parameters:
-    status:
-      name: status
+    identifier:
+      name: identifier
+      in: query
+      schema:
+        type: string
+    patient:
+      name: patient
       in: query
       schema:
         type: string
@@ -149,13 +154,8 @@ components:
       required: true
       schema:
         type: string
-    identifier:
-      name: identifier
-      in: query
-      schema:
-        type: string
-    patient:
-      name: patient
+    status:
+      name: status
       in: query
       schema:
         type: string

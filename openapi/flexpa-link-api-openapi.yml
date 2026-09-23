@@ -1,6 +1,6 @@
-openapi: 3.0.1
+openapi: 3.2.0
 info:
-  title: Flexpa Access Tokens Link API
+  title: Flexpa Link API
   description: Flexpa lets applications connect a patient to their health insurance plan and retrieve claims and clinical data as normalized FHIR R4 resources. Patients authorize access through Flexpa Link using OAuth 2.0 with PKCE, producing a Patient Access Token. Server-to-server Application Access Tokens are minted with the client_credentials grant using publishable and secret keys. The FHIR API is served under https://api.flexpa.com/fhir.
   termsOfService: https://www.flexpa.com/legal/terms
   contact:
@@ -17,7 +17,7 @@ paths:
       operationId: authorize
       tags:
       - Link
-      summary: Start the Flexpa Link OAuth 2.0 PKCE authorization flow.
+      summary: Start the Flexpa Link OAuth 2.0 PKCE authorization flow
       description: Redirects the patient into the Flexpa Link experience to select their health plan and authorize access. On success Flexpa redirects back to the application's redirect_uri with an authorization code.
       parameters:
       - name: response_type

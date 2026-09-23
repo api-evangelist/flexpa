@@ -1,10 +1,7 @@
 {
   "provider": "flexpa",
   "sources": [
-    "flexpa-access-tokens-api-openapi.yml",
-    "flexpa-claims-data-api-openapi.yml",
-    "flexpa-fhir-api-openapi.yml",
-    "flexpa-link-api-openapi.yml"
+    "_original/flexpa-openapi.yml"
   ],
   "outputs": [
     "flexpa-access-tokens-api-openapi.yml",
@@ -15,6 +12,19 @@
   "archived": [],
   "errors": [],
   "warnings": [],
-  "notes": [],
-  "skipped": []
+  "notes": [
+    "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "flexpa-openapi.yml: upgraded openapi 3.0.1 -> OpenAPI 3.2.0",
+    "flexpa-openapi.yml: declared missing tag: Access Tokens",
+    "flexpa-openapi.yml: declared missing tag: Claims Data",
+    "flexpa-openapi.yml: declared missing tag: FHIR",
+    "flexpa-openapi.yml: declared missing tag: Link",
+    "apis.yml register: already-registered"
+  ],
+  "skipped": [
+    "flexpa-access-tokens-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "flexpa-claims-data-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "flexpa-fhir-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "flexpa-link-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
 }
