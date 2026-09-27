@@ -138,13 +138,18 @@ paths:
           description: Structured extraction output.
 components:
   parameters:
+    patient:
+      name: patient
+      in: query
+      schema:
+        type: string
     identifier:
       name: identifier
       in: query
       schema:
         type: string
-    patient:
-      name: patient
+    status:
+      name: status
       in: query
       schema:
         type: string
@@ -152,11 +157,6 @@ components:
       name: id
       in: path
       required: true
-      schema:
-        type: string
-    status:
-      name: status
-      in: query
       schema:
         type: string
   schemas:
