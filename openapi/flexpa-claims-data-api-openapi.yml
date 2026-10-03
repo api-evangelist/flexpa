@@ -110,19 +110,14 @@ paths:
         '200':
           description: A FHIR ExplanationOfBenefit resource.
 components:
+  responses:
+    SyncFailed:
+      description: Synchronization with the payer failed.
+    Syncing:
+      description: The patient's data is still being synchronized from the payer (typically under one minute). Retry after a short delay.
   parameters:
     patient:
       name: patient
-      in: query
-      schema:
-        type: string
-    identifier:
-      name: identifier
-      in: query
-      schema:
-        type: string
-    status:
-      name: status
       in: query
       schema:
         type: string
@@ -130,6 +125,16 @@ components:
       name: id
       in: path
       required: true
+      schema:
+        type: string
+    status:
+      name: status
+      in: query
+      schema:
+        type: string
+    identifier:
+      name: identifier
+      in: query
       schema:
         type: string
   schemas:
@@ -149,11 +154,6 @@ components:
           type: array
           items:
             type: object
-  responses:
-    SyncFailed:
-      description: Synchronization with the payer failed.
-    Syncing:
-      description: The patient's data is still being synchronized from the payer (typically under one minute). Retry after a short delay.
   securitySchemes:
     bearerAuth:
       type: http
