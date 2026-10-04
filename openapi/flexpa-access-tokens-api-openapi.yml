@@ -34,6 +34,22 @@ paths:
                 $ref: '#/components/schemas/TokenResponse'
 components:
   schemas:
+    TokenResponse:
+      type: object
+      properties:
+        access_token:
+          type: string
+        token_type:
+          type: string
+          example: Bearer
+        expires_in:
+          type: integer
+          description: Token lifetime in seconds.
+        refresh_token:
+          type: string
+          description: Present when the offline_access scope was granted.
+        scope:
+          type: string
     TokenRequest:
       type: object
       required:
@@ -60,22 +76,6 @@ components:
         refresh_token:
           type: string
           description: The refresh token (refresh_token grant).
-    TokenResponse:
-      type: object
-      properties:
-        access_token:
-          type: string
-        token_type:
-          type: string
-          example: Bearer
-        expires_in:
-          type: integer
-          description: Token lifetime in seconds.
-        refresh_token:
-          type: string
-          description: Present when the offline_access scope was granted.
-        scope:
-          type: string
   securitySchemes:
     bearerAuth:
       type: http

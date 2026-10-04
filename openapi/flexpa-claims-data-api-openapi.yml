@@ -116,8 +116,8 @@ components:
     Syncing:
       description: The patient's data is still being synchronized from the payer (typically under one minute). Retry after a short delay.
   parameters:
-    patient:
-      name: patient
+    identifier:
+      name: identifier
       in: query
       schema:
         type: string
@@ -132,8 +132,8 @@ components:
       in: query
       schema:
         type: string
-    identifier:
-      name: identifier
+    patient:
+      name: patient
       in: query
       schema:
         type: string
