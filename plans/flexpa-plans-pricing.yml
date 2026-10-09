@@ -217,3 +217,58 @@ plans:
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
+x-canonical:
+  generated: '2026-10-08'
+  vocabulary: all/0-working/economics/plans-canonical.yml
+  models:
+  - seat
+  - subscription
+  units:
+  - negotiated
+  - seat
+  plans:
+  - name: Startup
+    access: other
+    model: subscription
+    model_how: stated
+    units:
+    - negotiated
+    - seat
+    periods:
+    - year
+  - name: Growth
+    access: other
+    model: subscription
+    model_how: stated
+    units:
+    - negotiated
+    - seat
+    periods:
+    - year
+  - name: Scale
+    access: other
+    model: subscription
+    model_how: stated
+    units:
+    - negotiated
+    - seat
+    periods:
+    - year
+  - name: Omni
+    access: other
+    model: subscription
+    model_how: stated
+    units:
+    - negotiated
+    - seat
+    periods:
+    - year
+  - name: Infrastructure
+    access: enterprise
+    model: seat
+    model_how: derived
+    units:
+    - negotiated
+    - seat
+    periods:
+    - year
