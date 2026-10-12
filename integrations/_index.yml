@@ -11,3 +11,23 @@
   source: edge
   status: pending-partner-spec
   arazzo: null
+- slug: flexpa-commonwell-health-alliance
+  label: CommonWell Health Alliance
+  partner_name: CommonWell Health Alliance
+  type: contract
+  channel: network-directory
+  evidence: https://www.commonwellalliance.org/wp-json/wp/v2/pages?slug=commonwell-members&_fields=id,link,content
+  source: edge
+  relationship: network-participant
+  contract_reference:
+    network: CommonWell Health Alliance
+    spec_file: null
+    role: member
+    listed_name: Flexpa
+    listing_page: https://www.commonwellalliance.org/how-to-participate/commonwell-members/
+    network_id: flexpa.com
+    matched_domain: flexpa.com
+    detected_by: sweep-health-networks.py
+    detected: '2026-10-12'
+  status: pending-partner-spec
+  arazzo: null

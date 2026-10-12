@@ -9,6 +9,7 @@ checked:
 - https://composio.dev/toolkits/flexpa
 - https://monid.ai/tools/flexpa
 - https://n8n.io/integrations/flexpa/
+- https://www.commonwellalliance.org/wp-json/wp/v2/pages?slug=commonwell-members&_fields=id,link,content
 - https://www.flexpa.com/llms.txt
 - https://zapier.com/apps/flexpa/integrations
 summary: null
@@ -21,4 +22,21 @@ edges:
   note: Flexpa llms.txt names "the Oura Ring" among agents, apps and devices that ask patients to share health records
     through Flexpa.
   partner_name: Oura
+- partner_name: CommonWell Health Alliance
+  partner: null
+  type: contract
+  channel: network-directory
+  relationship: network-participant
+  direction: partner-built
+  evidence: https://www.commonwellalliance.org/wp-json/wp/v2/pages?slug=commonwell-members&_fields=id,link,content
+  contract_reference:
+    network: CommonWell Health Alliance
+    spec_file: null
+    role: member
+    listed_name: Flexpa
+    listing_page: https://www.commonwellalliance.org/how-to-participate/commonwell-members/
+    network_id: flexpa.com
+    matched_domain: flexpa.com
+    detected_by: sweep-health-networks.py
+    detected: '2026-10-12'
 templates: []
