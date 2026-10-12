@@ -1,37 +1,32 @@
-generated: '2026-08-14'
+generated: '2026-10-12'
 method: probed
 source: https://www.flexpa.com/docs/guides/agents
 status: published
 provider: Flexpa
 providerId: flexpa
-summary: >-
-  Flexpa ships two first-party remote MCP servers on api.flexpa.com. The patient
+summary: Flexpa ships two first-party remote MCP servers on api.flexpa.com. The patient
   MCP server (/mcp) is OAuth-protected and exposes a patient's claims and clinical
-  record as tools; the Endpoint Directory MCP server (/mcp/directory) is public,
-  unauthenticated, and exposes the payer/provider directory. Both are Streamable
-  HTTP endpoints an MCP client POSTs to directly - there is no stdio package.
+  record as tools; the Endpoint Directory MCP server (/mcp/directory) is public, unauthenticated,
+  and exposes the payer/provider directory. Both are Streamable HTTP endpoints an
+  MCP client POSTs to directly - there is no stdio package.
 deployment:
   mode: remote
   endpoint: https://api.flexpa.com/mcp
-  auth: oauth
+  auth: none
   verified: probed
-  note: >-
-    POST tools/list to https://api.flexpa.com/mcp returned HTTP 401
-    {"error":"invalid_token"} with
-    WWW-Authenticate: Bearer resource_metadata="https://api.flexpa.com/.well-known/oauth-protected-resource/mcp".
-    The second server, https://api.flexpa.com/mcp/directory, is also remote and
-    answers anonymously (probed 200, tool schemas archived).
+  note: '2026-10-12: POST tools/list to https://api.flexpa.com/mcp returned HTTP 200
+    anonymously with 2 registry tools (saved mcp/flexpa-mcp-registry-tools.json);
+    llms.txt states "Streamable HTTP, no authentication". https://api.flexpa.com/mcp/consent
+    (patient records connector) returned 401 and is OAuth-gated via Flexpa Consent.'
 servers:
 - name: flexpa
   title: Flexpa MCP Server (patient data)
   url: https://api.flexpa.com/mcp
   transport: streamable-http
   auth: oauth
-  auth_detail: >-
-    OAuth 2.1 + PKCE per the MCP remote-authentication requirements and SMART on
-    FHIR. Accepts the same Patient Access Token or Application Access Token as
-    the FHIR API. Dynamic client registration is advertised at
-    https://api.flexpa.com/oauth/register.
+  auth_detail: OAuth 2.1 + PKCE per the MCP remote-authentication requirements and
+    SMART on FHIR. Accepts the same Patient Access Token or Application Access Token
+    as the FHIR API. Dynamic client registration is advertised at https://api.flexpa.com/oauth/register.
   scopes:
   - launch/patient
   - offline_access
@@ -39,13 +34,13 @@ servers:
   probe:
     method: tools/list
     http_status: 401
-    body: '{"error":"invalid_token","error_description":"Authorization required to access the MCP server"}'
+    body: '{"error":"invalid_token","error_description":"Authorization required to
+      access the MCP server"}'
     fetched: '2026-08-14'
   tools_source: https://www.flexpa.com/docs/guides/agents
-  tools_note: >-
-    Live tools/list is auth-gated, so input schemas require an authenticated
-    introspection. The tool names and descriptions below are the provider's own
-    published list from the Agent Guide; no schemas are asserted.
+  tools_note: Live tools/list is auth-gated, so input schemas require an authenticated
+    introspection. The tool names and descriptions below are the provider's own published
+    list from the Agent Guide; no schemas are asserted.
   install:
   - client: Claude Code CLI
     command: claude mcp add flexpa --transport http https://api.flexpa.com/mcp
@@ -90,10 +85,9 @@ servers:
     description: Extracts text from clinical documents.
   - name: fhir_read
     description: Reads specific FHIR resources by ID.
-  resources_note: >-
-    The Agent Guide also documents URI-addressed MCP resources such as
-    flexpa://patient, flexpa://health-summary and flexpa://fhir/Patient, plus
-    pre-defined prompts. Not enumerated here beyond what the docs publish.
+  resources_note: The Agent Guide also documents URI-addressed MCP resources such
+    as flexpa://patient, flexpa://health-summary and flexpa://fhir/Patient, plus pre-defined
+    prompts. Not enumerated here beyond what the docs publish.
 - name: flexpa-directory
   title: Flexpa Endpoint Directory MCP Server
   url: https://api.flexpa.com/mcp/directory
@@ -113,7 +107,8 @@ servers:
     http_status: 200
     fetched: '2026-08-14'
     file: flexpa-directory-tools.json
-  rate_limit: 60 requests per minute, HTTP 429 on exhaustion (per the Directory MCP docs).
+  rate_limit: 60 requests per minute, HTTP 429 on exhaustion (per the Directory MCP
+    docs).
   install:
   - client: Claude Code CLI
     command: claude mcp add flexpa-directory --transport http https://api.flexpa.com/mcp/directory
@@ -122,7 +117,8 @@ servers:
   tools:
   - name: search_endpoints
     title: Search Health Insurance Providers
-    description: Search the Flexpa Endpoint Directory to find health insurance payers and healthcare providers.
+    description: Search the Flexpa Endpoint Directory to find health insurance payers
+      and healthcare providers.
     input:
       required:
       - query
@@ -134,7 +130,8 @@ servers:
       - endpointId
   - name: check_lob_support
     title: Check Line of Business Support
-    description: Validate if a specific endpoint supports a line of business and determine the authentication flow.
+    description: Validate if a specific endpoint supports a line of business and determine
+      the authentication flow.
     input:
       required:
       - endpointId
@@ -170,3 +167,14 @@ docs:
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
+registry_tools:
+- name: search_tools
+  description: Find health tools and MCP servers by task or exact tool name. Local
+    tool entries include input schemas for execute_tool. Indexed mcp_tool entries
+    include the owning server, original toolName, and dire
+  source: https://api.flexpa.com/mcp
+- name: execute_tool
+  description: Invoke a local tool (kind=tool) found with search_tools using its input
+    schema. Entries with kind=mcp_server or mcp_tool return guidance for the direct
+    provider connection. Call indexed tools by their
+  source: https://api.flexpa.com/mcp

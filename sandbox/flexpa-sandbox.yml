@@ -3,12 +3,7 @@ method: searched
 source: https://www.flexpa.com/docs/test-mode
 provider: Flexpa
 providerId: flexpa
-summary: >-
-  Flexpa runs a full test mode with its own key pair prefixes and a published set
-  of synthetic patients. Because Flexpa brokers connections to real payer and EHR
-  sandboxes, its "test data" is mostly other people's sandbox credentials - Epic,
-  Cerner and Athena test logins, plus TEFCA identity-proofing test accounts. Test
-  mode is provisioned during onboarding, not self-serve.
+summary: Flexpa runs a full test mode with its own key pair prefixes and a published set of synthetic patients. Because Flexpa brokers connections to real payer and EHR sandboxes, its "test data" is mostly other people's sandbox credentials - Epic, Cerner and Athena test logins, plus TEFCA identity-proofing test accounts. Test mode is provisioned during onboarding, not self-serve.
 modes:
 - name: test
   key_prefixes:
@@ -19,9 +14,7 @@ modes:
   key_prefixes:
   - pk_live_
   - sk_live_
-  gate: >-
-    Requires a signed MSA plus a publicly accessible privacy policy and terms of
-    service on the customer's side. There is no free live tier.
+  gate: Requires a signed MSA plus a publicly accessible privacy policy and terms of service on the customer's side. There is no free live tier.
 access:
   self_serve: false
   provisioning: Demo intake at https://www.flexpa.com/demo, then sandbox keys and a shared Slack channel.
@@ -89,10 +82,9 @@ tooling:
   note: Flexpa's Agent Guide recommends it for exercising the MCP server with a valid access token.
 - name: Quickstart sample app
   url: https://github.com/flexpa/quickstart
-caveats: >-
-  Every credential above is a published synthetic test credential from Flexpa's
-  public documentation. None of it is a Flexpa production secret and none of it
-  was invented here.
+caveats: Every credential above is a published synthetic test credential from Flexpa's public documentation. None of it is a Flexpa production secret and none of it was invented here.
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
+description: Flexpa runs a full test mode with its own key pair prefixes and a published set of synthetic patients. Because Flexpa brokers connections to real payer and EHR sandboxes, its "test data" is mostly other people's sandbox credentials - Epic, Cerner and Athena test logins, plus TEFCA identity-proofing test accounts. Test mode is provisioned during onboarding, not self-serve.
+docs: https://www.flexpa.com/docs/test-mode

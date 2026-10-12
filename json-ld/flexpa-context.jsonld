@@ -1,0 +1,78 @@
+{
+  "@context": {
+    "@vocab": "https://flexpa.com/schema#",
+    "schema": "https://schema.org/",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "dcterms": "http://purl.org/dc/terms/",
+    "flexpa": "https://flexpa.com/schema#",
+    "TokenResponse": "flexpa:TokenResponse",
+    "access_token": {
+      "@id": "flexpa:access_token",
+      "@type": "xsd:string"
+    },
+    "token_type": {
+      "@id": "flexpa:token_type",
+      "@type": "xsd:string"
+    },
+    "expires_in": {
+      "@id": "flexpa:expires_in",
+      "@type": "xsd:integer"
+    },
+    "refresh_token": {
+      "@id": "flexpa:refresh_token",
+      "@type": "xsd:string"
+    },
+    "scope": {
+      "@id": "flexpa:scope",
+      "@type": "xsd:string"
+    },
+    "TokenRequest": "flexpa:TokenRequest",
+    "grant_type": {
+      "@id": "flexpa:grant_type",
+      "@type": "xsd:string"
+    },
+    "code": {
+      "@id": "flexpa:code",
+      "@type": "xsd:string"
+    },
+    "code_verifier": {
+      "@id": "flexpa:code_verifier",
+      "@type": "xsd:string"
+    },
+    "redirect_uri": {
+      "@id": "flexpa:redirect_uri",
+      "@type": "@id"
+    },
+    "client_id": {
+      "@id": "flexpa:client_id",
+      "@type": "xsd:string"
+    },
+    "Bundle": "flexpa:Bundle",
+    "resourceType": {
+      "@id": "flexpa:resourceType",
+      "@type": "xsd:string"
+    },
+    "type": {
+      "@id": "flexpa:type",
+      "@type": "xsd:string"
+    },
+    "total": {
+      "@id": "flexpa:total",
+      "@type": "xsd:integer"
+    },
+    "entry": {
+      "@id": "flexpa:entry",
+      "@container": "@list"
+    }
+  },
+  "@type": "schema:Dataset",
+  "schema:name": "Flexpa API JSON-LD context",
+  "schema:description": "A JSON-LD @context for the objects Flexpa's own API contract declares: one class per component schema, one property per declared field, typed from the contract. Derived by script (derive-json-ld.py, 2026-10-12) from openapi/flexpa-access-tokens-api-openapi.yml, openapi/flexpa-claims-data-api-openapi.yml, openapi/flexpa-fhir-api-openapi.yml.",
+  "dcterms:created": "2026-10-12",
+  "dcterms:source": [
+    "openapi/flexpa-access-tokens-api-openapi.yml",
+    "openapi/flexpa-claims-data-api-openapi.yml",
+    "openapi/flexpa-fhir-api-openapi.yml",
+    "openapi/flexpa-link-api-openapi.yml"
+  ]
+}

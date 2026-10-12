@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/flexpa/main/json-schema/flexpa-bundle-schema.json",
+  "title": "Bundle",
+  "description": "A FHIR R4 Bundle of resources.",
+  "x-generated": "2026-10-12",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/flexpa-claims-data-api-openapi.yml#/components/schemas/Bundle",
+  "type": "object",
+  "properties": {
+    "resourceType": {
+      "type": "string"
+    },
+    "type": {
+      "type": "string"
+    },
+    "total": {
+      "type": "integer"
+    },
+    "entry": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    }
+  }
+}

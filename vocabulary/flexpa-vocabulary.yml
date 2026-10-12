@@ -1,0 +1,29 @@
+generated: '2026-10-12'
+method: derived
+generator: derive-vocabulary.py
+source:
+- openapi/flexpa-access-tokens-api-openapi.yml
+- openapi/flexpa-claims-data-api-openapi.yml
+- openapi/flexpa-fhir-api-openapi.yml
+- openapi/flexpa-link-api-openapi.yml
+vocabulary:
+  name: Flexpa Domain Vocabulary
+  description: 'Terms declared by Flexpa''s own API contract: its resource groups, objects and enumerations, with the contract''s definitions.
+    Derived, not authored.'
+  version: '2026-10-12'
+  terms:
+  - term: TokenResponse
+    definition: 'Object declared by the contract with fields: access_token, token_type, expires_in, refresh_token, scope.'
+    tags:
+    - Object
+    source: openapi/flexpa-access-tokens-api-openapi.yml#/components/schemas/TokenResponse
+  - term: TokenRequest
+    definition: 'Object declared by the contract with fields: grant_type, code, code_verifier, redirect_uri, client_id, refresh_token.'
+    tags:
+    - Object
+    source: openapi/flexpa-access-tokens-api-openapi.yml#/components/schemas/TokenRequest
+  - term: Bundle
+    definition: A FHIR R4 Bundle of resources.
+    tags:
+    - Object
+    source: openapi/flexpa-claims-data-api-openapi.yml#/components/schemas/Bundle
