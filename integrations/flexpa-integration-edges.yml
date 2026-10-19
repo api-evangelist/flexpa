@@ -6,9 +6,16 @@ source:
 - https://composio.dev/toolkits/flexpa
 - https://monid.ai/tools/flexpa
 checked:
+- https://api.nuget.org/v3
 - https://composio.dev/toolkits/flexpa
+- https://crates.io/api/v1
 - https://monid.ai/tools/flexpa
 - https://n8n.io/integrations/flexpa/
+- https://proxy.golang.org
+- https://pypi.org/pypi
+- https://registry.npmjs.org
+- https://repo1.maven.org/maven2
+- https://rubygems.org/api/v1
 - https://www.commonwellalliance.org/wp-json/wp/v2/pages?slug=commonwell-members&_fields=id,link,content
 - https://www.flexpa.com/llms.txt
 - https://zapier.com/apps/flexpa/integrations
@@ -39,4 +46,34 @@ edges:
     matched_domain: flexpa.com
     detected_by: sweep-health-networks.py
     detected: '2026-10-12'
+- partner_name: npm registry
+  partner: npm
+  partner_match: register
+  type: register
+  direction: provider-built
+  category: official SDK (JavaScript/TypeScript)
+  evidence: https://www.npmjs.com/package/@flexpa/link-react-native
+  channel: package-registry
+  relationship: distribution-channel
+  contract_reference:
+    register: npm registry (public registry JSON)
+    spec_file: null
+    language: JavaScript/TypeScript
+    packages:
+    - name: '@flexpa/link-react-native'
+      version: 0.1.0
+      released: '2026-01-08'
+      released_field: modified
+      lapsed: false
+      page: https://www.npmjs.com/package/@flexpa/link-react-native
+      repo_leg: github-org:flexpa
+      publisher_leg: org:flexpa
+      matched_by: github-org
+    current: true
+    signal_note: 'an official package on the registry: distribution, not an integration; lapsed = no release in
+      24 months'
+    detected_by: sweep-official-sdks.py
+    detected: '2026-10-18'
+  detected_by: sweep-official-sdks.py
+  first_seen: '2026-10-18'
 templates: []
