@@ -1,4 +1,4 @@
-# Flexpa (flexpa)
+# Flexpa
 
 <!-- API-EVANGELIST-PROVENANCE:BEGIN -->
 > ### About this repository
@@ -66,121 +66,185 @@
 
 Flexpa is a patient-access platform that lets applications connect a patient to their health insurance plan and retrieve claims and clinical data as normalized FHIR R4 resources. Patients authorize access through Flexpa Link / OAuth 2.0 PKCE, and applications read ExplanationOfBenefit, Coverage, Patient, and other resources from a single FHIR API at https://api.flexpa.com.
 
-**APIs.json:** [https://raw.githubusercontent.com/api-evangelist/flexpa/refs/heads/main/apis.yml](https://raw.githubusercontent.com/api-evangelist/flexpa/refs/heads/main/apis.yml)
+**Areas:** Healthcare · FHIR · Patient Access · Claims Data · Health Insurance
 
-## Tags
+## Flexpa on APIs.io
 
-- Healthcare
-- FHIR
-- Patient Access
-- Claims Data
-- Health Insurance
+Everything profiled for Flexpa is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/flexpa/](https://apis.io/providers/flexpa/)** — or go straight to one of the APIs or properties below.
 
-## Timestamps
+### APIs (4)
 
-- **Created:** 2026-06-21
-- **Modified:** 2026-06-21
+- [Flexpa Access Tokens API](https://apis.io/apis/flexpa/flexpa-access-tokens-api/) — The Access Tokens API from Flexpa — 1 operation(s) for access tokens.
+- [Flexpa Claims Data API](https://apis.io/apis/flexpa/flexpa-claims-data-api/) — The Claims Data API from Flexpa — 5 operation(s) for claims data.
+- [Flexpa FHIR API](https://apis.io/apis/flexpa/flexpa-fhir-api/) — The FHIR API from Flexpa — 8 operation(s) for fhir.
+- [Flexpa Link API](https://apis.io/apis/flexpa/flexpa-link-api/) — The Link API from Flexpa — 1 operation(s) for link.
 
-## APIs
+### Published properties
 
-### Flexpa Link / Connect API
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
 
-Patient consent and connection flow. Flexpa Link walks a patient through selecting their health plan and authorizing access; the OAuth 2.0 PKCE authorization endpoint (GET /oauth/authorize) returns an authorization code that is exchanged for a Patient Access Token.
+#### AsyncAPI (1)
 
-- **Human URL:** [https://www.flexpa.com/docs/tools/link](https://www.flexpa.com/docs/tools/link)
-- **Base URL:** `https://api.flexpa.com`
+Event-driven and webhook contracts.
 
-#### Tags
+- [Flexpa Webhooks](https://apis.io/asyncapis/flexpa/flexpa-webhooks/)
 
-- Link
-- Connect
-- OAuth
-- PKCE
+#### MCP servers (1)
 
-#### Properties
+Model Context Protocol servers that expose the API to agents.
 
-- [Documentation](https://www.flexpa.com/docs/tools/link)
-- [API Reference](https://www.flexpa.com/docs/consent)
-- [OpenAPI](openapi/flexpa-openapi.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
-- [Postman Collection](collections/flexpa.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/flexpa.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+- [flexpa-mcp.yml](https://apis.io/servers/flexpa/flexpa-mcp-yml/)
 
-### Flexpa Access Tokens API
+#### Agentic access (1)
 
-Token endpoint (POST /oauth/token) that exchanges an authorization code plus PKCE verifier for a Patient Access Token, refreshes tokens via the refresh_token grant, and mints server-to-server Application Access Tokens via the client_credentials grant using publishable and secret keys.
+Which operations an agent can call, which act, and which need a human in the loop.
 
-- **Human URL:** [https://www.flexpa.com/docs/consent](https://www.flexpa.com/docs/consent)
-- **Base URL:** `https://api.flexpa.com`
+- [Flexpa Agentic Access](https://apis.io/agentic-access/flexpa/flexpa-agentic-access/)
 
-#### Tags
+#### JSON Schema (3)
 
-- Access Tokens
-- OAuth
-- Authentication
+The data models the API reads and writes.
 
-#### Properties
+- [Bundle](https://apis.io/schemas/flexpa/flexpa-bundle/)
+- [TokenRequest](https://apis.io/schemas/flexpa/flexpa-token-request/)
+- [TokenResponse](https://apis.io/schemas/flexpa/flexpa-token-response/)
 
-- [Documentation](https://www.flexpa.com/docs/consent)
-- [Documentation](https://www.flexpa.com/blog/introducing-application-access-tokens-server-to-server-authentication-for-the-flexpa-fhir-api)
-- [OpenAPI](openapi/flexpa-openapi.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
-- [Postman Collection](collections/flexpa.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/flexpa.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+#### JSON-LD (1)
 
-### Flexpa FHIR Resources API
+Linked-data contexts for the provider's vocabulary.
 
-FHIR R4 read and search across patient compartment resources including Patient, Coverage, ExplanationOfBenefit, Condition, Observation, MedicationRequest, Practitioner, and Organization, plus the capability statement at GET /fhir/metadata.
+- [Flexpa Context](https://apis.io/jsonld/flexpa/flexpa-context/)
 
-- **Human URL:** [https://www.flexpa.com/docs/records](https://www.flexpa.com/docs/records)
-- **Base URL:** `https://api.flexpa.com/fhir`
+#### Collections (5)
 
-#### Tags
+Postman and Open Collection request collections.
 
-- FHIR
-- ExplanationOfBenefit
-- Coverage
-- Patient
+- [Flexpa API](https://apis.io/collections/flexpa/open-flexpa/)
+- [Flexpa Access Tokens API](https://apis.io/collections/flexpa/open-flexpa-access-tokens-api/)
+- [Flexpa Access Tokens Claims Data API](https://apis.io/collections/flexpa/open-flexpa-claims-data-api/)
+- [Flexpa Access Tokens FHIR API](https://apis.io/collections/flexpa/open-flexpa-fhir-api/)
+- [Flexpa Access Tokens Link API](https://apis.io/collections/flexpa/open-flexpa-link-api/)
 
-#### Properties
+#### Overlays (8)
 
-- [Documentation](https://www.flexpa.com/docs/records)
-- [Documentation](https://www.flexpa.com/docs/fhir/explanation-of-benefit)
-- [OpenAPI](openapi/flexpa-openapi.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
-- [Postman Collection](collections/flexpa.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/flexpa.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+OpenAPI overlays, including conversational phrasing for each operation.
 
-### Flexpa Claims Data API
+- [Flexpa Access Tokens Api Overlay](https://apis.io/overlays/flexpa/flexpa-access-tokens-api-overlay/)
+- [Flexpa Access Tokens Api Phrasing Overlay](https://apis.io/overlays/flexpa/flexpa-access-tokens-api-phrasing-overlay/)
+- [Flexpa Claims Data Api Overlay](https://apis.io/overlays/flexpa/flexpa-claims-data-api-overlay/)
+- [Flexpa Claims Data Api Phrasing Overlay](https://apis.io/overlays/flexpa/flexpa-claims-data-api-phrasing-overlay/)
+- [Flexpa Fhir Api Overlay](https://apis.io/overlays/flexpa/flexpa-fhir-api-overlay/)
+- [Flexpa Fhir Api Phrasing Overlay](https://apis.io/overlays/flexpa/flexpa-fhir-api-phrasing-overlay/)
+- [Flexpa Link Api Overlay](https://apis.io/overlays/flexpa/flexpa-link-api-overlay/)
+- [Flexpa Link Api Phrasing Overlay](https://apis.io/overlays/flexpa/flexpa-link-api-phrasing-overlay/)
 
-Health-insurance claims delivered as FHIR ExplanationOfBenefit resources, plus patient-portability operations such as Patient $everything, the International Patient Summary ($summary), and PDF export ($pdf).
+#### Governance rules (1)
 
-- **Human URL:** [https://www.flexpa.com/docs/fhir/explanation-of-benefit](https://www.flexpa.com/docs/fhir/explanation-of-benefit)
-- **Base URL:** `https://api.flexpa.com/fhir`
+Spectral rulesets for the provider's contracts.
 
-#### Tags
+- [Flexpa API Rules](https://apis.io/rules/flexpa/flexpa-rules/)
 
-- Claims Data
-- ExplanationOfBenefit
-- Portability
-- Patient Summary
+#### Security (3)
 
-#### Properties
+Authentication, trust centre, and vulnerability disclosure.
 
-- [Documentation](https://www.flexpa.com/docs/fhir/explanation-of-benefit)
-- [Documentation](https://www.flexpa.com/docs/records)
-- [OpenAPI](openapi/flexpa-openapi.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
-- [Postman Collection](collections/flexpa.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/flexpa.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+- [Flexpa Authentication](https://apis.io/security/flexpa/flexpa-authentication/)
+- [Flexpa Domain Security](https://apis.io/security/flexpa/flexpa-domain-security/)
+- [Flexpa Trust Center](https://apis.io/security/flexpa/flexpa-trust-center/)
 
-## Common Properties
+#### OAuth scopes (1)
 
-- [GitHub Organization](https://github.com/flexpa)
-- [LinkedIn](https://www.linkedin.com/company/flexpa)
+The permissions the API asks for.
+
+- [Flexpa Scopes](https://apis.io/scopes/flexpa/flexpa-scopes/)
+
+#### Plans and pricing (1)
+
+Published plans, tiers and prices.
+
+- [Flexpa Plans Pricing](https://apis.io/plans/flexpa/flexpa-plans-pricing/)
+
+#### Rate limits (1)
+
+Published request limits.
+
+- [Flexpa Rate Limits](https://apis.io/rate-limits/flexpa/flexpa-rate-limits/)
+
+#### FinOps (1)
+
+What the API costs to run, by operation.
+
+- [Flexpa Finops](https://apis.io/finops/flexpa/flexpa-finops/)
+
+## Where to find this API
+
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
+
 - [Website](https://www.flexpa.com)
 - [Documentation](https://www.flexpa.com/docs)
-- [Plans](plans/flexpa-plans-pricing.yml)
-- [Rate Limits](rate-limits/flexpa-rate-limits.yml)
-- [Fin Ops](finops/flexpa-finops.yml)
+- [Getting started](https://www.flexpa.com/docs/guides/quickstart)
+- [API reference](https://www.flexpa.com/docs/records)
+- [Pricing](https://www.flexpa.com/pricing)
+- [Sign up](https://www.flexpa.com/demo)
+- [Support](https://www.flexpa.com/docs/support)
+- [Blog](https://www.flexpa.com/blog)
+- [Compliance](https://security.flexpa.com)
+- [Terms of service](https://www.flexpa.com/terms)
+- [Privacy policy](https://www.flexpa.com/privacy)
+- [GitHub](https://github.com/flexpa)
+- [Status](https://flexpastatus.com)
 
-## Maintainers
+## API Evangelist rating
 
-**FN:** Kin Lane
-**Email:** kin@apievangelist.com
+**Kin Score 72.2** — exemplar · rubric 0.25.0 · scored 2026-10-23
+
+| Facet | Score |
+|---|---|
+| Discoverability | 75.0 |
+| Contract quality | 63.1 |
+| Contract governance | 35.6 |
+| Operational transparency | 65.8 |
+| Developer ergonomics | 73.2 |
+| Access clarity | 84.2 |
+
+**Agent readiness 48.6** — agent-ready (gated down from agent-native)
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | yes |
+| Agentic Access | derived (partial credit) |
+| Reversibility Documented | — |
+| MCP Server | documented (partial credit) |
+| Auth Clarity | served (partial credit) |
+| Idempotency | — |
+| Error Semantics | documented (partial credit) |
+| OpenAPI Examples | — |
+| Rate Limit Signal | documented (partial credit) |
+| Event Surface Described | yes |
+| Agent Skills | derived (partial credit) |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | — |
+| Delegated Identity | served (partial credit) |
+| Protected Resource Metadata | verified |
+| Dynamic Client Registration | yes |
+| Agentic Commerce | — |
+| Pagination Ratio | na |
+| Operation Distinctiveness | distinct |
+
+**Regulatory alignment 47.7** — Health
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/flexpa/](https://apis.io/providers/flexpa/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for Flexpa: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/flexpa/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
